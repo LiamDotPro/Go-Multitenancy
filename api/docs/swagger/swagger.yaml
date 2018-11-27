@@ -1,0 +1,50 @@
+info:
+  contact: {}
+  license: {}
+paths:
+  /api/users/assignUserCompany:
+    post:
+      summary: Updates a users company assignment
+      tags:
+      - users
+  /api/users/create:
+    post:
+      summary: Create a new user
+      tags:
+      - users
+  /api/users/deleteUser:
+    delete:
+      summary: Deletes a user using a user id
+      tags:
+      - users
+  /api/users/getAllCompanyUsers:
+    get:
+      summary: Attempts to get all users associated with a company.
+      tags:
+      - users
+  /api/users/getAllSystemUsers:
+    get:
+      summary: Attempts to get all available users independent of company
+      tags:
+      - users
+  /api/users/getCurrentUser:
+    get:
+      summary: Attempts to get the currently logged in user using there session id.
+      tags:
+      - users
+  /api/users/getUserById:
+    get:
+      summary: Attempts to get a existing user by id
+      tags:
+      - users
+  /api/users/login:
+    post:
+      summary: Attempt to login using user details
+      tags:
+      - users
+  /api/users/updateUserDetails:
+    post:
+      summary: Updates a users details
+      tags:
+      - users
+swagger: "2.0"
