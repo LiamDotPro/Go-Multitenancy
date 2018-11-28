@@ -8,10 +8,9 @@ import (
 
 type TenantConnectionInformation struct {
 	gorm.Model
-	TenantId                  uint
+	TenantId                  uint `gorm:"AUTO_INCREMENT"`
 	TenantSubDomainIdentifier string
 	ConnectionString          string
-	StoreSecret               string
 }
 
 // Helper method that create's and returns the database connection.

@@ -11,7 +11,7 @@ func findTenancy() gin.HandlerFunc {
 		fmt.Println(&c)
 
 		// Set example variable
-		c.Set("example", "12345")
+		c.Set("connection", "12345")
 
 		c.Next()
 	}

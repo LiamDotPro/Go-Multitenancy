@@ -1,6 +1,10 @@
 package main
 
 import (
+	"github.com/gin-gonic/gin"
+	"github.com/swaggo/gin-swagger"
+	"github.com/swaggo/gin-swagger/swaggerFiles"
+	"io"
 	"os"
 	"os/exec"
 	"runtime"
@@ -21,27 +25,28 @@ func main() {
 	// Start database services and load master database.
 	startDatabaseServices()
 
-	//// Logging to a file.
-	//f, _ := os.Create("gin.log")
-	//gin.DefaultWriter = io.MultiWriter(f)
-	//
-	//// Use the following code if you need to write the logs to file and console at the same time.
-	//gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
-	//
-	//// init router
-	//router := gin.Default()
-	//
-	//router.Use(findTenancy())
-	//
-	//// Setting up our routes on the router.
-	//// Users
+	// Logging to a file.
+	f, _ := os.Create("gin.log")
+	gin.DefaultWriter = io.MultiWriter(f)
+
+	// Use the following code if you need to write the logs to file and console at the same time.
+	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
+
+	// init router
+	router := gin.Default()
+
+	router.Use(findTenancy())
+
+	// Setting up our routes on the router.
+
+	// Users
 	//setupUsersRoutes(router)
-	//
-	//// Add routing for swag @todo make this development only using envs
-	//router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
-	//
-	//// Starting the router instance
-	//router.Run(port)
+
+	// Add routing for swag @todo make this development only using envs
+	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+
+	// Starting the router instance
+	router.Run(port)
 }
 
 // Helper function that allows us to open a browser dependant on your OS

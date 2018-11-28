@@ -11,7 +11,7 @@ import (
 var Connection *gorm.DB
 var Store *gormstore.Store
 // var ClientStores []
-var ConnectionInformation []TenantConnectionInformation
+var TenantInformation []TenantConnectionInformation
 
 func startDatabaseServices() {
 
@@ -40,7 +40,13 @@ func startDatabaseServices() {
 	// Always attempt to migrate changes to the master tenant schema
 	migrateMasterTenantDatabase()
 
-	createNewTenant()
+	msg, err := createNewTenant("Happy Feet")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Println(msg)
 
 	// Get all connection information from the database
 	getTenantDataFromDatabase()
@@ -53,33 +59,62 @@ func startDatabaseServices() {
 }
 
 // Create's a new database for use as a sub client.
-func createNewTenant(subDomainIdentifier string) []error {
-	if err := Connection.Exec("CREATE DATABASE " + subDomainIdentifier + " OWNER admin").GetErrors(); len(err) != 0 {
-		fmt.Println(len(err))
+func createNewTenant(subDomainIdentifier string) (msg string, err error) {
 
-		for _, err := range err {
-			fmt.Println(err)
-		}
-
-		return err
+	// Create new database to hold client.
+	if err := Connection.Exec("CREATE DATABASE " + subDomainIdentifier + " OWNER admin").Error; err != nil {
+		return "", err
 	}
+
+	var connectionInfo = TenantConnectionInformation{TenantSubDomainIdentifier: subDomainIdentifier, ConnectionString: "host=localhost port=5432 user=admin dbname=" + subDomainIdentifier + " password=1234 sslmode=disable"}
+
+	if err := Connection.Create(&connectionInfo).Error; err != nil {
+		return "", err
+	}
+
+	tenConn, tenConErr := connectionInfo.getConnection()
+
+	if tenConErr != nil {
+		return "", err
+	}
+
+	if err := migrateTenantTables(tenConn); err != nil {
+		return "", err
+	}
+
+	// Add the newly created tenant id back onto the tenant object
+
+	// Add the new tenant info to the collection
+	TenantInformation = append(TenantInformation, connectionInfo)
+
+	return "New Tenant has been successfully made", nil
 }
 
 // Gets all of the current client information from the master database and loads the id's
 // Into the connection information slice, then
 func getTenantDataFromDatabase() {
-	Connection.Find(&ConnectionInformation)
-	fmt.Println(&ConnectionInformation)
+	Connection.Find(&TenantInformation)
+	fmt.Println(&TenantInformation)
 }
 
 /**
 This method uses the base tenant connection set out within init.
  */
-func migrateMasterTenantDatabase() {
-	Connection.AutoMigrate(&TenantConnectionInformation{})
+func migrateMasterTenantDatabase() error {
+
+	if err := Connection.AutoMigrate(&TenantConnectionInformation{}).Error; err != nil {
+		return err
+	}
+
+	return nil
+
 }
 
 // Attempts to migrate tables using database connection
-func migrateTenantTables() {
-	// conn, err := ConnectionInformation[connectionIdentifier].getConnection()
+func migrateTenantTables(connection *gorm.DB) error {
+	if err := connection.AutoMigrate(&User{}).Error; err != nil {
+		return err
+	}
+
+	return nil
 }

@@ -1,7 +1,7 @@
-package users
+package main
 
 import (
-	_ "../docs"
+	_ "./docs"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -15,17 +15,15 @@ func setupUsersRoutes(router *gin.Engine) {
 	// POST
 	users.POST("create", HandleCreateUser)
 	users.POST("login", HandleLogin)
-	users.POST("updateUserDetails", ifAuthorized(), HandleUpdateUserDetails)
+	users.POST("updateUserDetails", HandleUpdateUserDetails)
 	users.POST("assignUserCompany", HandleUpdateUserCompany)
 
 	// GET
-	users.GET("getUserById", ifAuthorized(), HandleGetUserById)
-	users.GET("getAllSystemUsers", HandleGetAllSystemUsers)
-	users.GET("getAllCompanyUsers", HandleGetAllUsersByCompanyId)
-	users.GET("getCurrentUser", ifAuthorized(), HandleGetCurrentUser)
+	users.GET("getUserById", HandleGetUserById)
+	users.GET("getCurrentUser", HandleGetCurrentUser)
 
 	// DELETE
-	users.DELETE("deleteUser", ifAuthorized(), checkIfAdmin(), HandleDeleteUser)
+	users.DELETE("deleteUser", HandleDeleteUser)
 }
 
 /**
@@ -61,10 +59,6 @@ type LoginParams struct {
 
 type DeleteUserParams struct {
 	Id uint `form:"id" json:"id" binding:"required"`
-}
-
-type UserCompanySearchParams struct {
-	CompanyId uint `form:"companyId" json:"companyId" binding:"required"`
 }
 
 // @Summary Create a new user
@@ -253,54 +247,6 @@ func HandleGetCurrentUser(c *gin.Context) {
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Successfully found user",
-		"user":    outcome,
-	})
-
-}
-
-// @Summary Attempts to get all available users independent of company
-// @tags users
-// @Router /api/users/getAllSystemUsers [get]
-func HandleGetAllSystemUsers(c *gin.Context) {
-
-	// @todo add super admin check
-
-	outcome, err := getUserList()
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
-		log.Println(err)
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Successfully retrieved all users.",
-		"user":    outcome,
-	})
-
-}
-
-// @Summary Attempts to get all users associated with a company.
-// @tags users
-// @Router /api/users/getAllCompanyUsers [get]
-func HandleGetAllUsersByCompanyId(c *gin.Context) {
-	var json UserCompanySearchParams
-
-	if err := c.Bind(&json); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "No company ID found, please try again."})
-		return
-	}
-
-	outcome, err := getUserListByCompanyId(json.CompanyId)
-
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
-		log.Println(err)
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Successfully retrieved all company users.",
 		"user":    outcome,
 	})
 
