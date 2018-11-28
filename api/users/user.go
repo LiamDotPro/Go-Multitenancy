@@ -1,10 +1,9 @@
-package main
+package users
 
 import (
-	"github.com/jinzhu/gorm"
-	"github.com/liamdotpro/database"
-	"golang.org/x/crypto/bcrypt"
 	"errors"
+	"github.com/jinzhu/gorm"
+	"golang.org/x/crypto/bcrypt"
 )
 
 // User

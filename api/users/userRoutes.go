@@ -1,11 +1,10 @@
-package main
+package users
 
 import (
+	_ "../docs"
 	"github.com/gin-gonic/gin"
-	_ "./docs"
-	"net/http"
 	"log"
-	"github.com/liamdotpro/database"
+	"net/http"
 )
 
 // Init
@@ -118,12 +117,12 @@ func HandleLogin(c *gin.Context) {
 	}
 
 	// Setup new session.
-	session, err := database.Store.New(c.Request, "connect.s.id")
+	session, err := Store.New(c.Request, "connect.s.id")
 
 	session.Values["Authorised"] = true
 	session.Values["userId"] = userId
 
-	database.Store.Save(c.Request, c.Writer, session)
+	Store.Save(c.Request, c.Writer, session)
 
 	c.JSON(http.StatusOK, gin.H{
 		"attempt": outcome,
