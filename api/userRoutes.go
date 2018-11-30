@@ -3,6 +3,7 @@ package main
 import (
 	_ "./docs"
 	"github.com/gin-gonic/gin"
+	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
 )
@@ -13,17 +14,17 @@ func setupUsersRoutes(router *gin.Engine) {
 	users := router.Group("/api/users")
 
 	// POST
-	users.POST("create", HandleCreateUser)
+	users.POST("create", findTenancy(), HandleCreateUser)
 	users.POST("login", HandleLogin)
-	users.POST("updateUserDetails", HandleUpdateUserDetails)
-	users.POST("assignUserCompany", HandleUpdateUserCompany)
+	users.POST("updateUserDetails", findTenancy(), HandleUpdateUserDetails)
 
 	// GET
-	users.GET("getUserById", HandleGetUserById)
-	users.GET("getCurrentUser", HandleGetCurrentUser)
+	users.GET("getUserById", findTenancy(), HandleGetUserById)
+	users.GET("getCurrentUser", findTenancy(), HandleGetCurrentUser)
+	users.GET("testGetter", findTenancy(), HandleTestGetter)
 
 	// DELETE
-	users.DELETE("deleteUser", HandleDeleteUser)
+	users.DELETE("deleteUser", findTenancy(), HandleDeleteUser)
 }
 
 /**
@@ -45,11 +46,6 @@ type UpdateUserParams struct {
 	PhoneNumber   string `form:"phoneNumber" json:"phoneNumber"`
 	RecoveryEmail string `form:"recoveryEmail" json:"recoveryEmail"`
 	Contractor    bool   `form:"contractor" json:"contractor"`
-}
-
-type UserCompanyUpdateParams struct {
-	Id        uint `form:"id" json:"id" binding:"required"`
-	CompanyId int  `form:"companyId" json:"companyId" binding:"required"`
 }
 
 type LoginParams struct {
@@ -75,8 +71,11 @@ func HandleCreateUser(c *gin.Context) {
 		return
 	}
 
+	// Get the database object from the connection.
+	db, _ := c.Get("connection")
+
 	// Attempt to create a user.
-	insertedId, err := createUser(json.Email, json.Password, json.Type)
+	insertedId, err := createUser(json.Email, json.Password, json.Type, db.(*gorm.DB))
 
 	if err != nil {
 		// Handle the error and or return the context and include a server error status code.
@@ -102,7 +101,10 @@ func HandleLogin(c *gin.Context) {
 		return
 	}
 
-	userId, outcome, err := loginUser(json.Email, json.Password)
+	// Get the database object from the connection.
+	db, _ := c.Get("connection")
+
+	userId, outcome, err := loginUser(json.Email, json.Password, db.(*gorm.DB))
 
 	if err != nil {
 		// Were sending 422 as there is a validation concern.
@@ -137,33 +139,10 @@ func HandleUpdateUserDetails(c *gin.Context) {
 		return
 	}
 
-	outcome, err := updateUser(json.Id, json.Email, json.AccountType, json.FirstName, json.LastName, json.PhoneNumber, json.RecoveryEmail, json.Contractor)
+	// Get the database object from the connection.
+	db, _ := c.Get("connection")
 
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again."})
-		log.Println(err)
-		return
-	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"message": outcome,
-	})
-
-}
-
-// @Summary Updates a users company assignment
-// @tags users
-// @Router /api/users/assignUserCompany [post]
-func HandleUpdateUserCompany(c *gin.Context) {
-	var json UserCompanyUpdateParams
-
-	if err := c.ShouldBindJSON(&json); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"message": "Missing required fields, please try again."})
-		log.Println(err)
-		return
-	}
-
-	outcome, err := updateUserCompany(json.Id, json.CompanyId)
+	outcome, err := updateUser(json.Id, json.Email, json.AccountType, json.FirstName, json.LastName, json.PhoneNumber, json.RecoveryEmail, json.Contractor, db.(*gorm.DB))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again."})
@@ -188,7 +167,10 @@ func HandleDeleteUser(c *gin.Context) {
 		return
 	}
 
-	outcome, err := deleteUser(json.Id)
+	// Get the database object from the connection.
+	db, _ := c.Get("connection")
+
+	outcome, err := deleteUser(json.Id, db.(*gorm.DB))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again."})
@@ -214,7 +196,10 @@ func HandleGetUserById(c *gin.Context) {
 		return
 	}
 
-	outcome, err := getUser(json.Id)
+	// Get the database object from the connection.
+	db, _ := c.Get("connection")
+
+	outcome, err := getUser(json.Id, db.(*gorm.DB))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
@@ -237,7 +222,10 @@ func HandleGetCurrentUser(c *gin.Context) {
 	// Get the currently logged int user id.
 	userId := c.MustGet("userId")
 
-	outcome, err := getUser(userId.(uint))
+	// Get the database object from the connection.
+	db, _ := c.Get("connection")
+
+	outcome, err := getUser(userId.(uint), db.(*gorm.DB))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
@@ -248,6 +236,13 @@ func HandleGetCurrentUser(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Successfully found user",
 		"user":    outcome,
+	})
+
+}
+
+func HandleTestGetter(c *gin.Context) {
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Test Ran successfully",
 	})
 
 }

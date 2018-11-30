@@ -14,7 +14,7 @@ type TenantConnectionInformation struct {
 }
 
 // Helper method that create's and returns the database connection.
-func (t TenantConnectionInformation) getConnection() (connection *gorm.DB, err error) {
+func (t TenantConnectionInformation) getConnection() (*gorm.DB, error) {
 
 	if len(strings.TrimSpace(t.ConnectionString)) == 0 {
 		return nil, errors.New("Connection string was not found or was empty..")
@@ -22,7 +22,7 @@ func (t TenantConnectionInformation) getConnection() (connection *gorm.DB, err e
 
 	db, err := gorm.Open("postgres", t.ConnectionString)
 
-	if err == nil {
+	if err != nil {
 		return nil, err
 	}
 

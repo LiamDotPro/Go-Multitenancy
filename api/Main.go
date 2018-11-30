@@ -35,12 +35,10 @@ func main() {
 	// init router
 	router := gin.Default()
 
-	router.Use(findTenancy())
-
 	// Setting up our routes on the router.
 
 	// Users
-	//setupUsersRoutes(router)
+	setupUsersRoutes(router)
 
 	// Add routing for swag @todo make this development only using envs
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))

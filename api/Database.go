@@ -5,13 +5,14 @@ import (
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/wader/gormstore"
+	"strings"
 	"time"
 )
 
 var Connection *gorm.DB
 var Store *gormstore.Store
-// var ClientStores []
 var TenantInformation []TenantConnectionInformation
+var TenantMap map[string]TenantConnectionInformation
 
 func startDatabaseServices() {
 
@@ -40,14 +41,6 @@ func startDatabaseServices() {
 	// Always attempt to migrate changes to the master tenant schema
 	migrateMasterTenantDatabase()
 
-	msg, err := createNewTenant("Happy Feet")
-
-	if err != nil {
-		fmt.Println(err)
-	}
-
-	fmt.Println(msg)
-
 	// Get all connection information from the database
 	getTenantDataFromDatabase()
 
@@ -62,24 +55,24 @@ func startDatabaseServices() {
 func createNewTenant(subDomainIdentifier string) (msg string, err error) {
 
 	// Create new database to hold client.
-	if err := Connection.Exec("CREATE DATABASE " + subDomainIdentifier + " OWNER admin").Error; err != nil {
-		return "", err
+	if err := Connection.Exec("CREATE DATABASE " + strings.ToLower(subDomainIdentifier) + " OWNER admin").Error; err != nil {
+		return "error making the database", err
 	}
 
 	var connectionInfo = TenantConnectionInformation{TenantSubDomainIdentifier: subDomainIdentifier, ConnectionString: "host=localhost port=5432 user=admin dbname=" + subDomainIdentifier + " password=1234 sslmode=disable"}
 
 	if err := Connection.Create(&connectionInfo).Error; err != nil {
-		return "", err
+		return "error inserting the new database record", err
 	}
 
 	tenConn, tenConErr := connectionInfo.getConnection()
 
 	if tenConErr != nil {
-		return "", err
+		return "error creating the connection using connection method", err
 	}
 
-	if err := migrateTenantTables(tenConn); err != nil {
-		return "", err
+	if migrateErr := migrateTenantTables(tenConn); migrateErr != nil {
+		return "error attempting to migrate the existing tables to new database", migrateErr
 	}
 
 	// Add the newly created tenant id back onto the tenant object
@@ -91,10 +84,19 @@ func createNewTenant(subDomainIdentifier string) (msg string, err error) {
 }
 
 // Gets all of the current client information from the master database and loads the id's
-// Into the connection information slice, then
+// Into the connection information slice, then calls migrates on all of the profiles
 func getTenantDataFromDatabase() {
 	Connection.Find(&TenantInformation)
-	fmt.Println(&TenantInformation)
+
+	TenantMap = make(map[string]TenantConnectionInformation)
+
+	for _, element := range TenantInformation {
+
+		TenantMap[element.TenantSubDomainIdentifier] = element
+
+		conn, _ := element.getConnection()
+		migrateTenantTables(conn)
+	}
 }
 
 /**
@@ -112,6 +114,8 @@ func migrateMasterTenantDatabase() error {
 
 // Attempts to migrate tables using database connection
 func migrateTenantTables(connection *gorm.DB) error {
+	fmt.Println("Attempting to migrate tables to new database.")
+
 	if err := connection.AutoMigrate(&User{}).Error; err != nil {
 		return err
 	}
