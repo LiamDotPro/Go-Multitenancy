@@ -20,10 +20,6 @@ type User struct {
 	Contractor    bool `gorm:"sql:'not null' default:'false'"`
 }
 
-/**
-Crud
- */
-
 // Creates a standard user in the database.
 // Returns the inserted user id
 func createUser(email string, password string, accountType int, connection *gorm.DB) (uint, error) {

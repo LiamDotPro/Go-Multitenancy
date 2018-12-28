@@ -5,14 +5,6 @@
         "license": {}
     },
     "paths": {
-        "/api/users/assignUserCompany": {
-            "post": {
-                "tags": [
-                    "users"
-                ],
-                "summary": "Updates a users company assignment"
-            }
-        },
         "/api/users/create": {
             "post": {
                 "tags": [
@@ -27,22 +19,6 @@
                     "users"
                 ],
                 "summary": "Deletes a user using a user id"
-            }
-        },
-        "/api/users/getAllCompanyUsers": {
-            "get": {
-                "tags": [
-                    "users"
-                ],
-                "summary": "Attempts to get all users associated with a company."
-            }
-        },
-        "/api/users/getAllSystemUsers": {
-            "get": {
-                "tags": [
-                    "users"
-                ],
-                "summary": "Attempts to get all available users independent of company"
             }
         },
         "/api/users/getCurrentUser": {

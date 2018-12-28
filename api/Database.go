@@ -108,6 +108,14 @@ func migrateMasterTenantDatabase() error {
 		return err
 	}
 
+	if err := Connection.AutoMigrate(&TenantSubscriptionInformation{}).Error; err != nil {
+		return err
+	}
+
+	if err := Connection.AutoMigrate(&TenantSubscriptionType{}).Error; err != nil {
+		return err
+	}
+
 	return nil
 
 }

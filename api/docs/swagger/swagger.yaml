@@ -2,11 +2,6 @@ info:
   contact: {}
   license: {}
 paths:
-  /api/users/assignUserCompany:
-    post:
-      summary: Updates a users company assignment
-      tags:
-      - users
   /api/users/create:
     post:
       summary: Create a new user
@@ -15,16 +10,6 @@ paths:
   /api/users/deleteUser:
     delete:
       summary: Deletes a user using a user id
-      tags:
-      - users
-  /api/users/getAllCompanyUsers:
-    get:
-      summary: Attempts to get all users associated with a company.
-      tags:
-      - users
-  /api/users/getAllSystemUsers:
-    get:
-      summary: Attempts to get all available users independent of company
       tags:
       - users
   /api/users/getCurrentUser:

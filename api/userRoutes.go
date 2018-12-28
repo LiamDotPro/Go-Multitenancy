@@ -6,6 +6,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
+	"fmt"
 )
 
 // Init
@@ -241,6 +242,10 @@ func HandleGetCurrentUser(c *gin.Context) {
 }
 
 func HandleTestGetter(c *gin.Context) {
+
+	connection, _ := c.Get("connection")
+
+	fmt.Printf("%v", connection.(*gorm.DB))
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Test Ran successfully",
 	})
