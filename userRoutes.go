@@ -2,11 +2,11 @@ package main
 
 import (
 	_ "./docs"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
-	"fmt"
 )
 
 // Init
@@ -30,7 +30,7 @@ func setupUsersRoutes(router *gin.Engine) {
 
 /**
 Model binding types.
- */
+*/
 
 type CreateUserParams struct {
 	Email    string `form:"email" json:"email" binding:"required"`

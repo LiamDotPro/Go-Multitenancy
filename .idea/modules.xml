@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/mobile-data-collection-project.iml" filepath="$PROJECT_DIR$/.idea/mobile-data-collection-project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/Go-Multitenancy.iml" filepath="$PROJECT_DIR$/.idea/Go-Multitenancy.iml" />
     </modules>
   </component>
 </project>

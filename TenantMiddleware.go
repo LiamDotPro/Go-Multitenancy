@@ -1,10 +1,10 @@
 package main
 
 import (
-	"github.com/gin-gonic/gin"
-	"strings"
 	"errors"
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"strings"
 )
 
 type tenantIdentifierParams struct {

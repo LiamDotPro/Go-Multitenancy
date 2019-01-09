@@ -32,4 +32,3 @@ paths:
       summary: Updates a users details
       tags:
       - users
-swagger: "2.0"

@@ -1,4 +1,4 @@
-package ,main
+package main
 
 import (
 	"fmt"
@@ -101,7 +101,7 @@ func getTenantDataFromDatabase() {
 
 /**
 This method uses the base tenant connection set out within init.
- */
+*/
 func migrateMasterTenantDatabase() error {
 
 	if err := Connection.AutoMigrate(&TenantConnectionInformation{}).Error; err != nil {
