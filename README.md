@@ -15,8 +15,9 @@ Supported Databases:
 Currently most SQL databases are supported through the change of the GORM config.
 
 Backend Todo:
+- [ ] Add CI
+- [ ] Create Run Scripts for Linux and Mac
 - [ ] Intergrate Stripe Payment soloution
 - [ ] User Module Creation & Testing
 - [ ] Package down soloution and refactor code to work with module's to minimize required code.
-- [ ] Add CI
 - [ ] Create Cli Project for Creating New Project
