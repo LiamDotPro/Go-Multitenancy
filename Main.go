@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/LiamDotPro/Go-Multitenancy/database"
+	"github.com/LiamDotPro/Go-Multitenancy/tenants/users"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
@@ -39,29 +40,13 @@ func main() {
 	// Setting up our routes on the router.
 
 	// Users
-	setupUsersRoutes(router)
+	users.SetupUsersRoutes(router)
 
 	// Add routing for swag @todo make this development only using envs
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Starting the router instance
-	router.Run(port)
-}
+	if err := router.Run(port); err != nil {
 
-// Helper function that allows us to open a browser dependant on your OS
-func open(url string) error {
-	var cmd string
-	var args []string
-
-	switch runtime.GOOS {
-	case "windows":
-		cmd = "cmd"
-		args = []string{"/c", "start"}
-	case "darwin":
-		cmd = "open"
-	default: // "linux", "freebsd", "openbsd", "netbsd"
-		cmd = "xdg-open"
 	}
-	args = append(args, url)
-	return exec.Command(cmd, args...).Start()
 }

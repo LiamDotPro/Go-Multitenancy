@@ -1,15 +1,16 @@
-package main
+package middlewarez
 
 import (
+	"github.com/LiamDotPro/Go-Multitenancy/database"
 	"github.com/gin-gonic/gin"
 	"net/http"
 )
 
 // Checks if a user is logged in with a session.
-func ifAuthorized() gin.HandlerFunc {
+func IfAuthorized() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
-		sessionValues, err := Store.Get(c.Request, "connect.s.id")
+		sessionValues, err := database.Store.Get(c.Request, "connect.s.id")
 
 		if err != nil {
 			c.JSON(http.StatusUnauthorized, gin.H{"message": "You are not authorized to view this."})

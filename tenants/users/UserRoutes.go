@@ -10,7 +10,7 @@ import (
 )
 
 // Init
-func setupUsersRoutes(router *gin.Engine) {
+func SetupUsersRoutes(router *gin.Engine) {
 
 	users := router.Group("/api/users")
 
