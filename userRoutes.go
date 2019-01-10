@@ -1,7 +1,6 @@
 package main
 
 import (
-	_ "./docs"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
