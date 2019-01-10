@@ -46,7 +46,6 @@ type UpdateUserParams struct {
 	LastName      string `form:"lastName" json:"lastName"`
 	PhoneNumber   string `form:"phoneNumber" json:"phoneNumber"`
 	RecoveryEmail string `form:"recoveryEmail" json:"recoveryEmail"`
-	Contractor    bool   `form:"contractor" json:"contractor"`
 }
 
 type LoginParams struct {
@@ -119,7 +118,9 @@ func HandleLogin(c *gin.Context) {
 	session.Values["Authorised"] = true
 	session.Values["userId"] = userId
 
-	Store.Save(c.Request, c.Writer, session)
+	if err := Store.Save(c.Request, c.Writer, session); err != nil {
+		fmt.Print(err)
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"attempt": outcome,
@@ -143,7 +144,7 @@ func HandleUpdateUserDetails(c *gin.Context) {
 	// Get the database object from the connection.
 	db, _ := c.Get("connection")
 
-	outcome, err := updateUser(json.Id, json.Email, json.AccountType, json.FirstName, json.LastName, json.PhoneNumber, json.RecoveryEmail, json.Contractor, db.(*gorm.DB))
+	outcome, err := updateUser(json.Id, json.Email, json.AccountType, json.FirstName, json.LastName, json.PhoneNumber, json.RecoveryEmail, db.(*gorm.DB))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again."})

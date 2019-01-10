@@ -12,12 +12,10 @@ type User struct {
 	Email         string
 	Password      string `json:",omitempty"`
 	AccountType   int
-	CompanyId     int
 	FirstName     string
 	LastName      string
 	PhoneNumber   string
 	RecoveryEmail string
-	Contractor    bool `gorm:"sql:'not null' default:'false'"`
 }
 
 // Creates a standard user in the database.
@@ -79,7 +77,7 @@ func loginUser(email string, password string, connection *gorm.DB) (uint, bool, 
 
 // Updates a user in the database.
 // A separate method is called when updating a company id
-func updateUser(id uint, email string, accountType int, firstName string, lastName string, phoneNumber string, recoveryEmail string, contractor bool, connection *gorm.DB) (string, error) {
+func updateUser(id uint, email string, accountType int, firstName string, lastName string, phoneNumber string, recoveryEmail string, connection *gorm.DB) (string, error) {
 
 	var user User
 
@@ -91,7 +89,6 @@ func updateUser(id uint, email string, accountType int, firstName string, lastNa
 		LastName:      lastName,
 		PhoneNumber:   phoneNumber,
 		RecoveryEmail: recoveryEmail,
-		Contractor:    contractor,
 	}).Error; err != nil {
 		return "", err
 	}
