@@ -6,6 +6,7 @@ import (
 	"github.com/LiamDotPro/Go-Multitenancy/master/masterUsers"
 )
 
+// Use connection directly from database for master connection.
 var Connection = database.Connection
 
 /**

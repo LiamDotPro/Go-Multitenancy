@@ -1,0 +1,56 @@
+{
+    "info": {
+        "contact": {},
+        "license": {}
+    },
+    "paths": {
+        "/api/users/create": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create a new user"
+            }
+        },
+        "/api/users/deleteUser": {
+            "delete": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Deletes a user using a user id"
+            }
+        },
+        "/api/users/getCurrentUser": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Attempts to get the currently logged in user using there session id."
+            }
+        },
+        "/api/users/getUserById": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Attempts to get a existing user by id"
+            }
+        },
+        "/api/users/login": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Attempt to login using user details"
+            }
+        },
+        "/api/users/updateUserDetails": {
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Updates a users details"
+            }
+        }
+    }
+}

@@ -8,8 +8,6 @@ import (
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"io"
 	"os"
-	"os/exec"
-	"runtime"
 )
 
 func main() {
