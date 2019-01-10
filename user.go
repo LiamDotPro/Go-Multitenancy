@@ -2,8 +2,8 @@ package main
 
 import (
 	"errors"
+	"github.com/LiamDotPro/Go-Multitenancy/helpers"
 	"github.com/jinzhu/gorm"
-	"golang.org/x/crypto/bcrypt"
 )
 
 // User
@@ -36,7 +36,7 @@ func createUser(email string, password string, accountType int, connection *gorm
 
 	// Hash the password so it's not clear text.
 	// Run outside of the if statements so we can grab the result outside of local scope.
-	hash, hashErr := helpers.hashPassword([]byte(password))
+	hash, hashErr := helpers.HashPassword([]byte(password))
 
 	if hashErr != nil {
 		return 0, hashErr
