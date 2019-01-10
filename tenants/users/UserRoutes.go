@@ -2,7 +2,7 @@ package users
 
 import (
 	"fmt"
-	"github.com/LiamDotPro/Go-Multitenancy/middleware/tenantMiddleware"
+	"github.com/LiamDotPro/Go-Multitenancy/middleware"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"log"
@@ -15,17 +15,17 @@ func SetupUsersRoutes(router *gin.Engine) {
 	users := router.Group("/api/users")
 
 	// POST
-	users.POST("create", tenantMiddleware.FindTenancy(), HandleCreateUser)
+	users.POST("create", middleware.FindTenancy(), HandleCreateUser)
 	users.POST("login", HandleLogin)
-	users.POST("updateUserDetails", tenantMiddleware.FindTenancy(), HandleUpdateUserDetails)
+	users.POST("updateUserDetails", middleware.FindTenancy(), HandleUpdateUserDetails)
 
 	// GET
-	users.GET("getUserById", tenantMiddleware.FindTenancy(), HandleGetUserById)
-	users.GET("getCurrentUser", tenantMiddleware.FindTenancy(), HandleGetCurrentUser)
-	users.GET("testGetter", tenantMiddleware.FindTenancy(), HandleTestGetter)
+	users.GET("getUserById", middleware.FindTenancy(), HandleGetUserById)
+	users.GET("getCurrentUser", middleware.FindTenancy(), HandleGetCurrentUser)
+	users.GET("testGetter", middleware.FindTenancy(), HandleTestGetter)
 
 	// DELETE
-	users.DELETE("deleteUser", tenantMiddleware.FindTenancy(), HandleDeleteUser)
+	users.DELETE("deleteUser", middleware.FindTenancy(), HandleDeleteUser)
 }
 
 /**
