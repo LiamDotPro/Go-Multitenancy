@@ -2,10 +2,11 @@ package migrations
 
 import (
 	"github.com/LiamDotPro/Go-Multitenancy/database"
+	"github.com/LiamDotPro/Go-Multitenancy/master"
 	"github.com/LiamDotPro/Go-Multitenancy/tenants"
 )
 
-var Connection := database.Connection
+var Connection = database.Connection
 
 /**
 This method uses the base tenant connection set out within init.
