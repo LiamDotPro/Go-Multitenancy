@@ -1,4 +1,4 @@
-package tenantUsers
+package users
 
 import (
 	_ "../docs"

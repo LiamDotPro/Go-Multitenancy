@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/LiamDotPro/Go-Multitenancy/database"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
@@ -23,7 +24,7 @@ func main() {
 	}
 
 	// Start database services and load master database.
-	startDatabaseServices()
+	database.StartDatabaseServices()
 
 	// Logging to a file.
 	f, _ := os.Create("gin.log")

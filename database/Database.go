@@ -17,7 +17,7 @@ var Store *gormstore.Store
 var TenantInformation []master.TenantConnectionInformation
 var TenantMap map[string]master.TenantConnectionInformation
 
-func startDatabaseServices() {
+func StartDatabaseServices() {
 
 	// Database Connection string
 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=admin dbname=master password=1234 sslmode=disable")
@@ -71,7 +71,7 @@ func createNewTenant(subDomainIdentifier string) (msg string, err error) {
 		return "error inserting the new database record", err
 	}
 
-	tenConn, tenConErr := connectionInfo.getConnection()
+	tenConn, tenConErr := connectionInfo.GetConnection()
 
 	if tenConErr != nil {
 		return "error creating the connection using connection method", err

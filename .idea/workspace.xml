@@ -2,8 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bbf6567c-36f8-4900-ae66-43ddd38f0abf" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/Main.go" beforeDir="false" afterPath="$PROJECT_DIR$/Main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/database/Database.go" beforeDir="false" afterPath="$PROJECT_DIR$/database/Database.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/master/TenantConnectionInformation.go" beforeDir="false" afterPath="$PROJECT_DIR$/master/TenantConnectionInformation.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/TenantMiddleware.go" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/TenantMiddleware.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -19,7 +20,7 @@
             <file pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/tenantUsers/user.go">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="2115">
+                  <state relative-caret-position="2076">
                     <caret line="141" selection-start-line="141" selection-end-line="141" />
                     <folding>
                       <element signature="e#14#90#0" expanded="true" />
@@ -38,8 +39,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/database/Database.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="346">
-              <caret line="94" column="32" selection-start-line="94" selection-start-column="32" selection-end-line="94" selection-end-column="32" />
+            <state relative-caret-position="1170">
+              <caret line="93" column="27" selection-start-line="93" selection-start-column="27" selection-end-line="93" selection-end-column="27" />
               <folding>
                 <element signature="e#14#152#0" expanded="true" />
               </folding>
@@ -71,13 +72,25 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/middleware/TenantMiddleware.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="23" column="31" lean-forward="true" selection-start-line="23" selection-start-column="31" selection-end-line="23" selection-end-column="31" />
+            <state>
+              <caret column="19" selection-start-column="19" selection-end-column="19" />
               <folding>
                 <element signature="e#14#80#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Main.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="375">
+              <caret line="26" column="10" selection-start-line="26" selection-start-column="10" selection-end-line="26" selection-end-column="10" />
+              <folding>
+                <element signature="e#14#165#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -93,6 +106,15 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/master/TenantConnectionInformation.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="375">
+              <caret line="29" column="1" lean-forward="true" selection-start-line="29" selection-start-column="1" selection-end-line="29" selection-end-column="1" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/tenantUsers/userRoutes.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="240">
@@ -100,24 +122,6 @@
               <folding>
                 <element signature="e#14#116#0" expanded="true" />
               </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/master/TenantConnectionInformation.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="45">
-              <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/master/masterUsers/MasterUsers.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="210">
-              <caret line="14" selection-start-line="14" selection-end-line="14" />
             </state>
           </provider>
         </entry>
@@ -163,11 +167,12 @@
         <option value="$PROJECT_DIR$/MigrateMasterTables.go" />
         <option value="$PROJECT_DIR$/userRoutes.go" />
         <option value="$PROJECT_DIR$/.gitignore" />
-        <option value="$PROJECT_DIR$/middleware/TenantMiddleware.go" />
         <option value="$PROJECT_DIR$/migrations/MigrateMasterTables.go" />
         <option value="$PROJECT_DIR$/migrations/MigrateTenantTables.go" />
-        <option value="$PROJECT_DIR$/database/Database.go" />
         <option value="$PROJECT_DIR$/master/TenantConnectionInformation.go" />
+        <option value="$PROJECT_DIR$/Main.go" />
+        <option value="$PROJECT_DIR$/database/Database.go" />
+        <option value="$PROJECT_DIR$/middleware/TenantMiddleware.go" />
       </list>
     </option>
   </component>
@@ -217,6 +222,11 @@
             <path>
               <item name="Go-Multitenancy" type="b2602c69:ProjectViewProjectNode" />
               <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+            </path>
+            <path>
+              <item name="Go-Multitenancy" type="b2602c69:ProjectViewProjectNode" />
+              <item name="External Libraries" type="cb654da1:ExternalLibrariesNode" />
+              <item name="GOPATH &lt;Go-Multitenancy&gt;" type="20ee2d1f:SyntheticLibraryElementNode" />
             </path>
           </expand>
           <select />
@@ -341,16 +351,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="23" selection-start-line="23" selection-end-line="23" />
-          <folding>
-            <element signature="e#14#165#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Middleware.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="30">
@@ -365,34 +365,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/master/TenantSubscriptionInformation.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="9" selection-start-line="9" selection-end-line="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/master/TenantSubscriptionType.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/master/masterUsers/MasterUsers.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="210">
           <caret line="14" selection-start-line="14" selection-end-line="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/tenantUsers/userRoutes.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="240">
-          <caret line="16" column="11" lean-forward="true" selection-start-line="16" selection-start-column="11" selection-end-line="16" selection-end-column="11" />
-          <folding>
-            <element signature="e#14#116#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -418,7 +394,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/tenantUsers/user.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2115">
+        <state relative-caret-position="2076">
           <caret line="141" selection-start-line="141" selection-end-line="141" />
           <folding>
             <element signature="e#14#90#0" expanded="true" />
@@ -426,30 +402,71 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/Main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="26" column="10" selection-start-line="26" selection-start-column="10" selection-end-line="26" selection-end-column="10" />
+          <folding>
+            <element signature="e#14#165#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/database/Database.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="346">
-          <caret line="94" column="32" selection-start-line="94" selection-start-column="32" selection-end-line="94" selection-end-column="32" />
+        <state relative-caret-position="1170">
+          <caret line="93" column="27" selection-start-line="93" selection-start-column="27" selection-end-line="93" selection-end-column="27" />
           <folding>
             <element signature="e#14#152#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/master/TenantSubscriptionInformation.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="135">
+          <caret line="9" selection-start-line="9" selection-end-line="9" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/master/TenantSubscriptionType.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="165">
+          <caret line="11" lean-forward="true" selection-start-line="11" selection-end-line="11" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/go/src/github.com/LiamDotPro/Go-Multitenancy/master/TenantConnectionInformation.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="16" column="37" selection-start-line="16" selection-start-column="37" selection-end-line="16" selection-end-column="37" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/master/TenantConnectionInformation.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="375">
+          <caret line="29" column="1" lean-forward="true" selection-start-line="29" selection-start-column="1" selection-end-line="29" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/middleware/TenantMiddleware.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="345">
-          <caret line="23" column="31" lean-forward="true" selection-start-line="23" selection-start-column="31" selection-end-line="23" selection-end-column="31" />
+        <state>
+          <caret column="19" selection-start-column="19" selection-end-column="19" />
           <folding>
             <element signature="e#14#80#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/master/TenantConnectionInformation.go">
+    <entry file="file://$PROJECT_DIR$/tenantUsers/userRoutes.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="45">
-          <caret line="7" lean-forward="true" selection-start-line="7" selection-end-line="7" />
+        <state relative-caret-position="240">
+          <caret line="16" column="11" lean-forward="true" selection-start-line="16" selection-start-column="11" selection-end-line="16" selection-end-column="11" />
+          <folding>
+            <element signature="e#14#116#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
