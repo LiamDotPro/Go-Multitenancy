@@ -1,7 +1,7 @@
-package main
+package TenantUsers
 
 import (
-	_ "./docs"
+	_ "../docs"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"

@@ -1,4 +1,4 @@
-package tenants
+package master
 
 import (
 	"github.com/jinzhu/gorm"

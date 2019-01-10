@@ -1,4 +1,4 @@
-package tenants
+package middleware
 
 import (
 	"errors"
