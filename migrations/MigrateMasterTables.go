@@ -1,4 +1,4 @@
-package main
+package migrations
 
 /**
 This method uses the base tenant connection set out within init.
