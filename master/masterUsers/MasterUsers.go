@@ -1,4 +1,4 @@
-package main
+package masterUsers
 
 import "github.com/jinzhu/gorm"
 

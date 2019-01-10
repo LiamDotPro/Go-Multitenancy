@@ -2,6 +2,7 @@ package migrations
 
 import (
 	"fmt"
+	"github.com/LiamDotPro/Go-Multitenancy/TenantUsers"
 	"github.com/jinzhu/gorm"
 )
 
@@ -9,7 +10,7 @@ import (
 func migrateTenantTables(connection *gorm.DB) error {
 	fmt.Println("Attempting to migrate tables to new database.")
 
-	if err := connection.AutoMigrate(&User{}).Error; err != nil {
+	if err := connection.AutoMigrate(&TenantUsers.User{}).Error; err != nil {
 		return err
 	}
 

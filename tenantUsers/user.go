@@ -1,4 +1,4 @@
-package TenantUsers
+package tenantUsers
 
 import (
 	"errors"
