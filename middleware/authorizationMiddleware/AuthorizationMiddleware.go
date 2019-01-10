@@ -1,4 +1,4 @@
-package middlewarez
+package authorizationMiddleware
 
 import (
 	"github.com/LiamDotPro/Go-Multitenancy/database"
@@ -28,10 +28,3 @@ func IfAuthorized() gin.HandlerFunc {
 		c.Set("userId", sessionValues.Values["userId"])
 	}
 }
-
-// Specific check to see if the current user is also an administrator using there userID
-//func checkIfAdmin() gin.HandlerFunc {
-//	return func(c *gin.Context) {
-//
-//	}
-//}

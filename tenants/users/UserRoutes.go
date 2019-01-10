@@ -1,10 +1,10 @@
 package users
 
 import (
-	_ "../docs"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
+	"github.com/LiamDotPro/Go-Multitenancy/middleware"
 	"log"
 	"net/http"
 )
@@ -15,7 +15,7 @@ func SetupUsersRoutes(router *gin.Engine) {
 	users := router.Group("/api/users")
 
 	// POST
-	users.POST("create", middlfindTenancy(), HandleCreateUser)
+	users.POST("create", FindTenancy(), HandleCreateUser)
 	users.POST("login", HandleLogin)
 	users.POST("updateUserDetails", findTenancy(), HandleUpdateUserDetails)
 

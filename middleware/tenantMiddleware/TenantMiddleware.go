@@ -1,4 +1,4 @@
-package middlewarez
+package tenantMiddleware
 
 import (
 	"errors"
