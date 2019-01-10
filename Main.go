@@ -1,13 +1,13 @@
 package main
 
 import (
-	"github.com/LiamDotPro/Go-Multitenancy/database"
-	"github.com/LiamDotPro/Go-Multitenancy/tenants/users"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"io"
 	"os"
+	"os/exec"
+	"runtime"
 )
 
 func main() {
@@ -23,7 +23,7 @@ func main() {
 	}
 
 	// Start database services and load master database.
-	database.StartDatabaseServices()
+	startDatabaseServices()
 
 	// Logging to a file.
 	f, _ := os.Create("gin.log")
@@ -38,13 +38,29 @@ func main() {
 	// Setting up our routes on the router.
 
 	// Users
-	users.SetupUsersRoutes(router)
+	setupUsersRoutes(router)
 
 	// Add routing for swag @todo make this development only using envs
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Starting the router instance
-	if err := router.Run(port); err != nil {
+	router.Run(port)
+}
 
+// Helper function that allows us to open a browser dependant on your OS
+func open(url string) error {
+	var cmd string
+	var args []string
+
+	switch runtime.GOOS {
+	case "windows":
+		cmd = "cmd"
+		args = []string{"/c", "start"}
+	case "darwin":
+		cmd = "open"
+	default: // "linux", "freebsd", "openbsd", "netbsd"
+		cmd = "xdg-open"
 	}
+	args = append(args, url)
+	return exec.Command(cmd, args...).Start()
 }

@@ -2,8 +2,6 @@ package database
 
 import (
 	"fmt"
-	"github.com/LiamDotPro/Go-Multitenancy/master"
-	"github.com/LiamDotPro/Go-Multitenancy/migrations"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/wader/gormstore"
@@ -14,10 +12,10 @@ import (
 
 var Connection *gorm.DB
 var Store *gormstore.Store
-var TenantInformation []master.TenantConnectionInformation
-var TenantMap map[string]master.TenantConnectionInformation
+var TenantInformation []tenants.TenantConnectionInformationtionInformation
+var TenantMap map[string]tenants.TenantConnectionInformationctionInformation
 
-func StartDatabaseServices() {
+func startDatabaseServices() {
 
 	// Database Connection string
 	db, err := gorm.Open("postgres", "host=localhost port=5432 user=admin dbname=master password=1234 sslmode=disable")
@@ -42,7 +40,7 @@ func StartDatabaseServices() {
 	}, []byte("masterKeyPairValue"))
 
 	// Always attempt to migrate changes to the master tenant schema
-	if err := migrations.MigrateMasterTenantDatabase(); err != nil {
+	if err := migrateMasterTenantDatabase(); err != nil {
 		fmt.Print("There was an error while trying to migrate the tenant tables..")
 		os.Exit(1)
 	}
@@ -65,19 +63,19 @@ func createNewTenant(subDomainIdentifier string) (msg string, err error) {
 		return "error making the database", err
 	}
 
-	var connectionInfo = master.TenantConnectionInformation{TenantSubDomainIdentifier: subDomainIdentifier, ConnectionString: "host=localhost port=5432 user=admin dbname=" + subDomainIdentifier + " password=1234 sslmode=disable"}
+	var connectionInfo = TenantConnectionInformation{TenantSubDomainIdentifier: subDomainIdentifier, ConnectionString: "host=localhost port=5432 user=admin dbname=" + subDomainIdentifier + " password=1234 sslmode=disable"}
 
 	if err := Connection.Create(&connectionInfo).Error; err != nil {
 		return "error inserting the new database record", err
 	}
 
-	tenConn, tenConErr := connectionInfo.GetConnection()
+	tenConn, tenConErr := connectionInfo.getConnection()
 
 	if tenConErr != nil {
 		return "error creating the connection using connection method", err
 	}
 
-	if migrateErr := migrations.MigrateTenantTables(tenConn); migrateErr != nil {
+	if migrateErr := migrateTenantTables(tenConn); migrateErr != nil {
 		return "error attempting to migrate the existing tables to new database", migrateErr
 	}
 
@@ -94,15 +92,15 @@ func createNewTenant(subDomainIdentifier string) (msg string, err error) {
 func getTenantDataFromDatabase() {
 	Connection.Find(&TenantInformation)
 
-	TenantMap = make(map[string]master.TenantConnectionInformation)
+	TenantMap = make(map[string]TenantConnectionInformation)
 
 	for _, element := range TenantInformation {
 
 		TenantMap[element.TenantSubDomainIdentifier] = element
 
-		conn, _ := element.GetConnection()
+		conn, _ := element.getConnection()
 
-		if err := migrations.MigrateTenantTables(conn); err != nil {
+		if err := migrateTenantTables(conn); err != nil {
 			fmt.Print("An error occurred while attempting to migrate tenant tables")
 			os.Exit(1)
 		}
