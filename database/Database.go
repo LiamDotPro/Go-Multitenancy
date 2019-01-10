@@ -65,7 +65,7 @@ func createNewTenant(subDomainIdentifier string) (msg string, err error) {
 		return "error making the database", err
 	}
 
-	var connectionInfo = TenantConnectionInformation{TenantSubDomainIdentifier: subDomainIdentifier, ConnectionString: "host=localhost port=5432 user=admin dbname=" + subDomainIdentifier + " password=1234 sslmode=disable"}
+	var connectionInfo = master.TenantConnectionInformation{TenantSubDomainIdentifier: subDomainIdentifier, ConnectionString: "host=localhost port=5432 user=admin dbname=" + subDomainIdentifier + " password=1234 sslmode=disable"}
 
 	if err := Connection.Create(&connectionInfo).Error; err != nil {
 		return "error inserting the new database record", err
@@ -77,7 +77,7 @@ func createNewTenant(subDomainIdentifier string) (msg string, err error) {
 		return "error creating the connection using connection method", err
 	}
 
-	if migrateErr := migrateTenantTables(tenConn); migrateErr != nil {
+	if migrateErr := migrations.MigrateTenantTables(tenConn); migrateErr != nil {
 		return "error attempting to migrate the existing tables to new database", migrateErr
 	}
 
@@ -94,15 +94,15 @@ func createNewTenant(subDomainIdentifier string) (msg string, err error) {
 func getTenantDataFromDatabase() {
 	Connection.Find(&TenantInformation)
 
-	TenantMap = make(map[string]TenantConnectionInformation)
+	TenantMap = make(map[string]master.TenantConnectionInformation)
 
 	for _, element := range TenantInformation {
 
 		TenantMap[element.TenantSubDomainIdentifier] = element
 
-		conn, _ := element.getConnection()
+		conn, _ := element.GetConnection()
 
-		if err := migrateTenantTables(conn); err != nil {
+		if err := migrations.MigrateTenantTables(conn); err != nil {
 			fmt.Print("An error occurred while attempting to migrate tenant tables")
 			os.Exit(1)
 		}
