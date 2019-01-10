@@ -12,4 +12,6 @@
 *.out
 
 ./docs
-./gin.log
+docs
+gin.log
+Go-Multitenancy

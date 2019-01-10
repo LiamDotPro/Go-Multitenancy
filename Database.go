@@ -1,4 +1,4 @@
-package database
+package main
 
 import (
 	"fmt"
@@ -12,8 +12,8 @@ import (
 
 var Connection *gorm.DB
 var Store *gormstore.Store
-var TenantInformation []tenants.TenantConnectionInformationtionInformation
-var TenantMap map[string]tenants.TenantConnectionInformationctionInformation
+var TenantInformation []TenantConnectionInformation
+var TenantMap map[string]TenantConnectionInformation
 
 func startDatabaseServices() {
 
