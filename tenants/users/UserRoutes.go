@@ -15,7 +15,7 @@ func SetupUsersRoutes(router *gin.Engine) {
 	users := router.Group("/api/users")
 
 	// POST
-	users.POST("create", findTenancy(), HandleCreateUser)
+	users.POST("create", middlfindTenancy(), HandleCreateUser)
 	users.POST("login", HandleLogin)
 	users.POST("updateUserDetails", findTenancy(), HandleUpdateUserDetails)
 

@@ -13,7 +13,7 @@ type tenantIdentifierParams struct {
 	TenancyIdentifier string `form:"tenant" json:"tenant"`
 }
 
-func findTenancy() gin.HandlerFunc {
+func FindTenancy() gin.HandlerFunc {
 	return func(c *gin.Context) {
 
 		var json tenantIdentifierParams
