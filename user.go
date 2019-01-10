@@ -36,7 +36,7 @@ func createUser(email string, password string, accountType int, connection *gorm
 
 	// Hash the password so it's not clear text.
 	// Run outside of the if statements so we can grab the result outside of local scope.
-	hash, hashErr := hashPassword([]byte(password))
+	hash, hashErr := helpers.hashPassword([]byte(password))
 
 	if hashErr != nil {
 		return 0, hashErr
@@ -66,7 +66,7 @@ func loginUser(email string, password string, connection *gorm.DB) (uint, bool, 
 	}
 
 	// Now we've found a user send off the hashed password and sent password for decoding.
-	if result := CheckPasswordHash(password, user.Password); result != true {
+	if result := helpers.CheckPasswordHash(password, user.Password); result != true {
 		// Passwords do not match
 		return 0, false, errors.New("passwords did not match")
 	}
@@ -118,24 +118,4 @@ func getUser(id uint, connection *gorm.DB) (*User, error) {
 	}
 
 	return &user, nil
-}
-
-// Hashes a password
-// Running 4 rounds to comply with bcrypt recommendations for standard user.
-func hashPassword(password []byte) (string, error) {
-	hash, err := bcrypt.GenerateFromPassword(password, 4)
-	return string(hash), err
-}
-
-// Hashes a password for a super user
-// Running 8 rounds to comply with bcrypt recommendations for a super user.
-func hashPasswordAdmin(password []byte) (string, error) {
-	hash, err := bcrypt.GenerateFromPassword(password, 8)
-	return string(hash), err
-}
-
-// Check a users password from a hash.
-func CheckPasswordHash(password, hash string) bool {
-	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
-	return err == nil
 }

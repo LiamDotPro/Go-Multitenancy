@@ -12,3 +12,4 @@ type MasterUsers struct {
 	PhoneNumber   string
 	RecoveryEmail string
 }
+

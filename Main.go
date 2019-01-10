@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
@@ -44,7 +45,10 @@ func main() {
 	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
 	// Starting the router instance
-	router.Run(port)
+	if err := router.Run(port); err != nil {
+		fmt.Print(err)
+
+	}
 }
 
 // Helper function that allows us to open a browser dependant on your OS
