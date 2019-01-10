@@ -7,7 +7,7 @@ import (
 )
 
 // Attempts to migrate tables using database connection
-func migrateTenantTables(connection *gorm.DB) error {
+func MigrateTenantTables(connection *gorm.DB) error {
 	fmt.Println("Attempting to migrate tables to new database.")
 
 	if err := connection.AutoMigrate(&TenantUsers.User{}).Error; err != nil {

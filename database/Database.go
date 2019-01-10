@@ -2,7 +2,8 @@ package database
 
 import (
 	"fmt"
-	"github.com/LiamDotPro/Go-Multitenancy/tenants"
+	"github.com/LiamDotPro/Go-Multitenancy/master"
+	"github.com/LiamDotPro/Go-Multitenancy/migrations"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/wader/gormstore"
@@ -13,8 +14,8 @@ import (
 
 var Connection *gorm.DB
 var Store *gormstore.Store
-var TenantInformation []tenants.TenantConnectionInformationtionInformation
-var TenantMap map[string]tenants.TenantConnectionInformationctionInformation
+var TenantInformation []master.TenantConnectionInformation
+var TenantMap map[string]master.TenantConnectionInformation
 
 func startDatabaseServices() {
 
@@ -41,7 +42,7 @@ func startDatabaseServices() {
 	}, []byte("masterKeyPairValue"))
 
 	// Always attempt to migrate changes to the master tenant schema
-	if err := migrateMasterTenantDatabase(); err != nil {
+	if err := migrations.MigrateMasterTenantDatabase(); err != nil {
 		fmt.Print("There was an error while trying to migrate the tenant tables..")
 		os.Exit(1)
 	}

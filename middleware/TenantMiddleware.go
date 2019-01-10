@@ -3,6 +3,7 @@ package middleware
 import (
 	"errors"
 	"fmt"
+	"github.com/LiamDotPro/Go-Multitenancy/database"
 	"github.com/gin-gonic/gin"
 	"strings"
 )
@@ -20,7 +21,7 @@ func findTenancy() gin.HandlerFunc {
 		// @todo check if the conditions actually work for empty string.
 		if err := c.Bind(&json); err == nil && len(json.TenancyIdentifier) > 0 {
 
-			val, found := TenantMap[json.TenancyIdentifier]
+			val, found := database.TenantMap[json.TenancyIdentifier]
 
 			if !found {
 				fmt.Print("Tenant Identifier passed was not found in tenant map")
