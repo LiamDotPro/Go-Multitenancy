@@ -11,6 +11,7 @@ Supported Databases:
 - [X] Tsql
 - [ ] Provide enviroment variables based soloution for switch between adapters.
 - [ ] NoSql support (Long Term Goal)
+- [ ] Docker Support
 
 Currently most SQL databases are supported through the change of the GORM config.
 
