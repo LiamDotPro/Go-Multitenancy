@@ -16,3 +16,5 @@ docs
 gin.log
 Go-Multitenancy
 ./Go-Multitenancy
+.env
+/.env
