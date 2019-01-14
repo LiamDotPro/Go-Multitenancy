@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 	"runtime"
@@ -15,6 +17,13 @@ func main() {
 	// Show Swagger pages
 	// @todo This needs to be made a dev only process by env var
 	//open("http://localhost:8000/swagger/index.html")
+
+	// load environment variables from file.
+	err := godotenv.Load()
+
+	if err != nil {
+		log.Fatal("Error loading .env file")
+	}
 
 	// Configure port
 	port := ":" + os.Getenv("PORT")

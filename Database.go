@@ -18,7 +18,7 @@ var TenantMap map[string]TenantConnectionInformation
 func startDatabaseServices() {
 
 	// Database Connection string
-	db, err := gorm.Open("postgres", "host=localhost port=5432 user=admin dbname=master password=1234 sslmode=disable")
+	db, err := gorm.Open(os.Getenv("dialect"), os.Getenv("connectionString"))
 
 	if err != nil {
 		fmt.Println(err)
