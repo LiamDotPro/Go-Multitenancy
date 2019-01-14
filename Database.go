@@ -12,8 +12,6 @@ import (
 
 var Connection *gorm.DB
 var Store *gormstore.Store
-var TenantInformation []TenantConnectionInformation
-var TenantMap map[string]TenantConnectionInformation
 
 func startDatabaseServices() {
 
@@ -45,8 +43,8 @@ func startDatabaseServices() {
 		os.Exit(1)
 	}
 
-	// Get all connection information from the database
-	getTenantDataFromDatabase()
+	// attempt to migrate any tenant table changes to all clients.
+	AutoMigrateTenantTableChanges()
 
 	// Makes quit Available
 	quit := make(chan struct{})
@@ -81,22 +79,17 @@ func createNewTenant(subDomainIdentifier string) (msg string, err error) {
 
 	// Add the newly created tenant id back onto the tenant object
 
-	// Add the new tenant info to the collection
-	TenantInformation = append(TenantInformation, connectionInfo)
-
 	return "New Tenant has been successfully made", nil
 }
 
-// Gets all of the current client information from the master database and loads the id's
-// Into the connection information slice, then calls migrates on all of the profiles
-func getTenantDataFromDatabase() {
-	Connection.Find(&TenantInformation)
+// Simply migrates all of the tenant tables
+func AutoMigrateTenantTableChanges() {
 
-	TenantMap = make(map[string]TenantConnectionInformation)
+	var TenantInformation[] TenantConnectionInformation
+
+	Connection.Find(&TenantConnectionInformation{})
 
 	for _, element := range TenantInformation {
-
-		TenantMap[element.TenantSubDomainIdentifier] = element
 
 		conn, _ := element.getConnection()
 

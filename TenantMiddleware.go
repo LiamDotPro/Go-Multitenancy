@@ -20,13 +20,13 @@ func findTenancy() gin.HandlerFunc {
 		// @todo check if the conditions actually work for empty string.
 		if err := c.Bind(&json); err == nil && len(json.TenancyIdentifier) > 0 {
 
-			val, found := TenantMap[json.TenancyIdentifier]
+			var tenantInfo TenantConnectionInformation
 
-			if !found {
-				fmt.Print("Tenant Identifier passed was not found in tenant map")
+			if err := Connection.Where(&TenantConnectionInformation{TenantSubDomainIdentifier: json.TenancyIdentifier}).First(tenantInfo).Error; err != nil {
+				fmt.Print("Tenant Identifier passed was not found in database")
 			}
 
-			conn, connErr := val.getConnection()
+			conn, connErr := tenantInfo.getConnection()
 
 			if connErr != nil {
 				fmt.Print("Tenant connection could not be made for the request - attempt using json tenancyIdentifer")
@@ -67,11 +67,11 @@ func getSubdomainInformation(hostStr string) (TenantConnectionInformation, error
 		return TenantConnectionInformation{}, errors.New("subdomain was empty")
 	}
 
-	val, found := TenantMap[output[0]]
+	var tenantInfo TenantConnectionInformation
 
-	if !found {
-		return TenantConnectionInformation{}, errors.New("subdomain was not found in tenant collection")
+	if err := Connection.Where(&TenantConnectionInformation{TenantSubDomainIdentifier: hostStr}).First(tenantInfo).Error; err != nil {
+		return TenantConnectionInformation{}, err
 	}
 
-	return val, nil
+	return tenantInfo, nil
 }
