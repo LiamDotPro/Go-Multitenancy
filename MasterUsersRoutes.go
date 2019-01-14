@@ -56,7 +56,7 @@ func HandleMasterCreateUser(c *gin.Context) {
 }
 
 // @Summary Attempt to login using user details
-// @tags users
+// @tags master/users
 // @Router /api/users/login [post]
 func HandleMasterLogin(c *gin.Context) {
 
@@ -93,7 +93,7 @@ func HandleMasterLogin(c *gin.Context) {
 }
 
 // @Summary Updates a users details
-// @tags users
+// @tags master/users
 // @Router /api/users/updateUserDetails [post]
 func HandleMasterUpdateUserDetails(c *gin.Context) {
 	var json UpdateUserParams
@@ -119,7 +119,7 @@ func HandleMasterUpdateUserDetails(c *gin.Context) {
 }
 
 // @Summary Deletes a user using a user id
-// @tags users
+// @tags master/users
 // @Router /api/users/deleteUser [delete]
 func HandleMasterDeleteUser(c *gin.Context) {
 	var json DeleteUserParams
@@ -144,7 +144,7 @@ func HandleMasterDeleteUser(c *gin.Context) {
 }
 
 // @Summary Attempts to get a existing user by id
-// @tags users
+// @tags master/users
 // @Router /api/users/getUserById [get]
 func HandleMasterGetUserById(c *gin.Context) {
 	// Were using delete params as it shares the same interface.
@@ -171,7 +171,7 @@ func HandleMasterGetUserById(c *gin.Context) {
 }
 
 // @Summary Attempts to get the currently logged in user using there session id.
-// @tags users
+// @tags master/users
 // @Router /api/users/getCurrentUser [get]
 func HandleMasterGetCurrentUser(c *gin.Context) {
 
