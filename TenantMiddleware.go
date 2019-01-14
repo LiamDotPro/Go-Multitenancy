@@ -35,6 +35,9 @@ func findTenancy() gin.HandlerFunc {
 			// Set connection into the context for routing
 			c.Set("connection", conn)
 
+			// Set tenancy Identifier into params
+			c.Set("tenantIdentifier", json.TenancyIdentifier)
+
 			c.Next()
 		} else {
 			// Try and make a connection using the host subdomain
@@ -45,7 +48,7 @@ func findTenancy() gin.HandlerFunc {
 
 func getTenantConnectionByHost(hostStr string, c *gin.Context) {
 
-	connectionInformation, err := getSubdomainInformation(hostStr)
+	connectionInformation, tenantString, err := getSubdomainInformation(hostStr)
 
 	if err != nil {
 		c.AbortWithStatus(400)
@@ -62,26 +65,29 @@ func getTenantConnectionByHost(hostStr string, c *gin.Context) {
 	// Set connection into the context for routing
 	c.Set("connection", conn)
 
+	// Set tenancy Identifier into params
+	c.Set("tenantIdentifier", tenantString)
+
 	c.Next()
 }
 
-func getSubdomainInformation(hostStr string) (TenantConnectionInformation, error) {
+func getSubdomainInformation(hostStr string) (TenantConnectionInfo TenantConnectionInformation, tenantIdentifier string, err error) {
 
 	output := strings.Split(hostStr, ".")
 
 	if len(output) < 2 {
-		return TenantConnectionInformation{}, errors.New("there was no subdomain present in the string or not enough to split")
+		return TenantConnectionInformation{}, "", errors.New("there was no subdomain present in the string or not enough to split")
 	}
 
 	if len(output[0]) <= 0 {
-		return TenantConnectionInformation{}, errors.New("subdomain was empty")
+		return TenantConnectionInformation{}, "", errors.New("subdomain was empty")
 	}
 
 	var tenantInfo TenantConnectionInformation
 
 	if err := Connection.Where(&TenantConnectionInformation{TenantSubDomainIdentifier: output[0]}).First(tenantInfo).Error; err != nil {
-		return TenantConnectionInformation{}, err
+		return TenantConnectionInformation{}, "", err
 	}
 
-	return tenantInfo, nil
+	return tenantInfo, output[0], nil
 }

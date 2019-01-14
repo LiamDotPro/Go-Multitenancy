@@ -40,11 +40,8 @@ func HandleMasterCreateUser(c *gin.Context) {
 		return
 	}
 
-	// Get the database object from the connection.
-	db, _ := c.Get("connection")
-
 	// Attempt to create a user.
-	insertedId, err := createUser(json.Email, json.Password, json.Type, db.(*gorm.DB))
+	insertedId, err := createMasterUser(json.Email, json.Password, json.Type)
 
 	if err != nil {
 		// Handle the error and or return the context and include a server error status code.
@@ -70,10 +67,7 @@ func HandleMasterLogin(c *gin.Context) {
 		return
 	}
 
-	// Get the database object from the connection.
-	db, _ := c.Get("connection")
-
-	userId, outcome, err := loginUser(json.Email, json.Password, db.(*gorm.DB))
+	userId, outcome, err := loginMasterUser(json.Email, json.Password)
 
 	if err != nil {
 		// Were sending 422 as there is a validation concern.
@@ -81,8 +75,8 @@ func HandleMasterLogin(c *gin.Context) {
 		return
 	}
 
-	// Setup new session.
-	session, err := Store.New(c.Request, "connect.s.id")
+	// Setup new session only for host application.
+	session, err := Store.New(c.Request, "connect.host.identifier")
 
 	session.Values["Authorised"] = true
 	session.Values["userId"] = userId
@@ -110,10 +104,7 @@ func HandleMasterUpdateUserDetails(c *gin.Context) {
 		return
 	}
 
-	// Get the database object from the connection.
-	db, _ := c.Get("connection")
-
-	outcome, err := updateUser(json.Id, json.Email, json.AccountType, json.FirstName, json.LastName, json.PhoneNumber, json.RecoveryEmail, db.(*gorm.DB))
+	outcome, err := updateMasterUser(json.Id, json.Email, json.AccountType, json.FirstName, json.LastName, json.PhoneNumber, json.RecoveryEmail)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again."})
@@ -138,10 +129,7 @@ func HandleMasterDeleteUser(c *gin.Context) {
 		return
 	}
 
-	// Get the database object from the connection.
-	db, _ := c.Get("connection")
-
-	outcome, err := deleteUser(json.Id, db.(*gorm.DB))
+	outcome, err := deleteMasterUser(json.Id)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again."})
@@ -167,10 +155,7 @@ func HandleMasterGetUserById(c *gin.Context) {
 		return
 	}
 
-	// Get the database object from the connection.
-	db, _ := c.Get("connection")
-
-	outcome, err := getUser(json.Id, db.(*gorm.DB))
+	outcome, err := getMasterUser(json.Id)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})

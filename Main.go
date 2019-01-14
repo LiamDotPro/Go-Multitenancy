@@ -50,8 +50,13 @@ func main() {
 	// Users
 	setupUsersRoutes(router)
 
-	// Add routing for swag @todo make this development only using envs
-	router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	// Master Users
+	setupMasterUsersRoutes(router)
+
+	// Add routing for swag
+	if os.Getenv("environment") == "development" {
+		router.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
+	}
 
 	// Starting the router instance
 	if err := router.Run(port); err != nil {
