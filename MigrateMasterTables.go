@@ -19,7 +19,7 @@ func migrateMasterTenantDatabase() error {
 		return err
 	}
 
-	if err := Connection.AutoMigrate(&MasterUsers{}).Error; err != nil {
+	if err := Connection.AutoMigrate(&MasterUser{}).Error; err != nil {
 		return err
 	}
 
