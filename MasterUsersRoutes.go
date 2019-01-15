@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
 )
@@ -17,6 +16,7 @@ func setupMasterUsersRoutes(router *gin.Engine) {
 	users.POST("create", HandleMasterCreateUser)
 	users.POST("login", HandleMasterLogin)
 	users.POST("updateUserDetails", HandleMasterUpdateUserDetails)
+	users.POST("createNewTenant", HandleCreateNewTenant)
 
 	// GET
 	users.GET("getUserById", HandleMasterGetUserById)
@@ -40,11 +40,8 @@ func HandleMasterCreateUser(c *gin.Context) {
 		return
 	}
 
-	// Get the database object from the connection.
-	db, _ := c.Get("connection")
-
 	// Attempt to create a user.
-	insertedId, err := createUser(json.Email, json.Password, json.Type, db.(*gorm.DB))
+	insertedId, err := createMasterUser(json.Email, json.Password, json.Type)
 
 	if err != nil {
 		// Handle the error and or return the context and include a server error status code.
@@ -59,8 +56,8 @@ func HandleMasterCreateUser(c *gin.Context) {
 }
 
 // @Summary Attempt to login using user details
-// @tags users
-// @Router /api/users/login [post]
+// @tags master/users
+// @Router /master/api/users/login [post]
 func HandleMasterLogin(c *gin.Context) {
 
 	var json LoginParams
@@ -70,10 +67,7 @@ func HandleMasterLogin(c *gin.Context) {
 		return
 	}
 
-	// Get the database object from the connection.
-	db, _ := c.Get("connection")
-
-	userId, outcome, err := loginUser(json.Email, json.Password, db.(*gorm.DB))
+	userId, outcome, err := loginMasterUser(json.Email, json.Password)
 
 	if err != nil {
 		// Were sending 422 as there is a validation concern.
@@ -81,10 +75,10 @@ func HandleMasterLogin(c *gin.Context) {
 		return
 	}
 
-	// Setup new session.
+	// Setup new session only for host application.
 	session, err := Store.New(c.Request, "connect.s.id")
 
-	session.Values["Authorised"] = true
+	session.Values["host"] =
 	session.Values["userId"] = userId
 
 	if err := Store.Save(c.Request, c.Writer, session); err != nil {
@@ -99,8 +93,8 @@ func HandleMasterLogin(c *gin.Context) {
 }
 
 // @Summary Updates a users details
-// @tags users
-// @Router /api/users/updateUserDetails [post]
+// @tags master/users
+// @Router /master/api/users/updateUserDetails [post]
 func HandleMasterUpdateUserDetails(c *gin.Context) {
 	var json UpdateUserParams
 
@@ -110,10 +104,7 @@ func HandleMasterUpdateUserDetails(c *gin.Context) {
 		return
 	}
 
-	// Get the database object from the connection.
-	db, _ := c.Get("connection")
-
-	outcome, err := updateUser(json.Id, json.Email, json.AccountType, json.FirstName, json.LastName, json.PhoneNumber, json.RecoveryEmail, db.(*gorm.DB))
+	outcome, err := updateMasterUser(json.Id, json.Email, json.AccountType, json.FirstName, json.LastName, json.PhoneNumber, json.RecoveryEmail)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again."})
@@ -128,8 +119,8 @@ func HandleMasterUpdateUserDetails(c *gin.Context) {
 }
 
 // @Summary Deletes a user using a user id
-// @tags users
-// @Router /api/users/deleteUser [delete]
+// @tags master/users
+// @Router /master/api/users/deleteUser [delete]
 func HandleMasterDeleteUser(c *gin.Context) {
 	var json DeleteUserParams
 
@@ -138,10 +129,7 @@ func HandleMasterDeleteUser(c *gin.Context) {
 		return
 	}
 
-	// Get the database object from the connection.
-	db, _ := c.Get("connection")
-
-	outcome, err := deleteUser(json.Id, db.(*gorm.DB))
+	outcome, err := deleteMasterUser(json.Id)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again."})
@@ -156,8 +144,8 @@ func HandleMasterDeleteUser(c *gin.Context) {
 }
 
 // @Summary Attempts to get a existing user by id
-// @tags users
-// @Router /api/users/getUserById [get]
+// @tags master/users
+// @Router /master/api/users/getUserById [get]
 func HandleMasterGetUserById(c *gin.Context) {
 	// Were using delete params as it shares the same interface.
 	var json DeleteUserParams
@@ -167,10 +155,7 @@ func HandleMasterGetUserById(c *gin.Context) {
 		return
 	}
 
-	// Get the database object from the connection.
-	db, _ := c.Get("connection")
-
-	outcome, err := getUser(json.Id, db.(*gorm.DB))
+	outcome, err := getMasterUser(json.Id)
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
@@ -186,17 +171,14 @@ func HandleMasterGetUserById(c *gin.Context) {
 }
 
 // @Summary Attempts to get the currently logged in user using there session id.
-// @tags users
-// @Router /api/users/getCurrentUser [get]
+// @tags master/users
+// @Router /master/api/users/getCurrentUser [get]
 func HandleMasterGetCurrentUser(c *gin.Context) {
 
 	// Get the currently logged int user id.
 	userId := c.MustGet("userId")
 
-	// Get the database object from the connection.
-	db, _ := c.Get("connection")
-
-	outcome, err := getUser(userId.(uint), db.(*gorm.DB))
+	outcome, err := getMasterUser(userId.(uint))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
@@ -211,13 +193,28 @@ func HandleMasterGetCurrentUser(c *gin.Context) {
 
 }
 
-func HandleMasterTestGetter(c *gin.Context) {
+// @Summary Attempts to create a new tenant as a privileged user.
+// @tags master/users
+// @Router /master/api/users/createNewTenant [Post]
+func HandleCreateNewTenant(c *gin.Context) {
 
-	connection, _ := c.Get("connection")
+	var json CreateNewTenantParams
 
-	fmt.Printf("%v", connection.(*gorm.DB))
+	if err := c.Bind(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "No subdomain identifier was found."})
+		return
+	}
+
+	outcome, err := createNewTenant(json.SubDomainIdentifier)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
+		log.Println(err)
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Test Ran successfully",
+		"message": outcome,
 	})
 
 }

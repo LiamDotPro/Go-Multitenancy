@@ -17,61 +17,77 @@ func findTenancy() gin.HandlerFunc {
 		var json tenantIdentifierParams
 
 		// Try and find an incoming tenancy identifier on the request
-		// @todo check if the conditions actually work for empty string.
 		if err := c.Bind(&json); err == nil && len(json.TenancyIdentifier) > 0 {
 
-			val, found := TenantMap[json.TenancyIdentifier]
+			var tenantInfo TenantConnectionInformation
 
-			if !found {
-				fmt.Print("Tenant Identifier passed was not found in tenant map")
+			if err := Connection.Where(&TenantConnectionInformation{TenantSubDomainIdentifier: json.TenancyIdentifier}).First(tenantInfo).Error; err != nil {
+				fmt.Println("Tenant Identifier passed was not found in database")
+				c.AbortWithStatus(400)
 			}
 
-			conn, connErr := val.getConnection()
+			conn, connErr := tenantInfo.getConnection()
 
 			if connErr != nil {
-				fmt.Print("Tenant connection could not be made for the request - attempt using json tenancyIdentifer")
+				fmt.Println("Tenant connection could not be made for the request - attempt using json tenancyIdentifier")
 			}
 
 			// Set connection into the context for routing
 			c.Set("connection", conn)
 
-			c.Next()
-		} else if connectionInformation, err := getSubdomainInformation(c.Request.Host); err == nil {
-			// Make a check for a tenancy identifier being passed by the host as a subdomain identifier
-
-			conn, connErr := connectionInformation.getConnection()
-
-			if connErr != nil {
-				fmt.Print("Tenant connection could not be made for the request - attempt using host tenancyIdentifer")
-			}
-
-			// Set connection into the context for routing
-			c.Set("connection", conn)
+			// Set tenancy Identifier into params
+			c.Set("tenantIdentifier", json.TenancyIdentifier)
 
 			c.Next()
 		} else {
-			c.AbortWithStatus(400)
+			// Try and make a connection using the host subdomain
+			getTenantConnectionByHost(c.Request.Host, c)
 		}
 	}
 }
 
-func getSubdomainInformation(hostStr string) (TenantConnectionInformation, error) {
+func getTenantConnectionByHost(hostStr string, c *gin.Context) {
+
+	connectionInformation, tenantString, err := getSubdomainInformation(hostStr)
+
+	if err != nil {
+		c.AbortWithStatus(400)
+	}
+
+	// Make a check for a tenancy identifier being passed by the host as a subdomain identifier
+
+	conn, connErr := connectionInformation.getConnection()
+
+	if connErr != nil {
+		fmt.Print("Tenant connection could not be made for the request - attempt using host tenancyIdentifier")
+	}
+
+	// Set connection into the context for routing
+	c.Set("connection", conn)
+
+	// Set tenancy Identifier into params
+	c.Set("tenantIdentifier", tenantString)
+
+	c.Next()
+}
+
+func getSubdomainInformation(hostStr string) (TenantConnectionInfo TenantConnectionInformation, tenantIdentifier string, err error) {
 
 	output := strings.Split(hostStr, ".")
 
 	if len(output) < 2 {
-		return TenantConnectionInformation{}, errors.New("there was no subdomain present in the string or not enough to split")
+		return TenantConnectionInformation{}, "", errors.New("there was no subdomain present in the string or not enough to split")
 	}
 
 	if len(output[0]) <= 0 {
-		return TenantConnectionInformation{}, errors.New("subdomain was empty")
+		return TenantConnectionInformation{}, "", errors.New("subdomain was empty")
 	}
 
-	val, found := TenantMap[output[0]]
+	var tenantInfo TenantConnectionInformation
 
-	if !found {
-		return TenantConnectionInformation{}, errors.New("subdomain was not found in tenant collection")
+	if err := Connection.Where(&TenantConnectionInformation{TenantSubDomainIdentifier: output[0]}).First(tenantInfo).Error; err != nil {
+		return TenantConnectionInformation{}, "", err
 	}
 
-	return val, nil
+	return tenantInfo, output[0], nil
 }
