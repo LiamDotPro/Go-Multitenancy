@@ -76,9 +76,9 @@ func HandleMasterLogin(c *gin.Context) {
 	}
 
 	// Setup new session only for host application.
-	session, err := Store.New(c.Request, "connect.host.identifier")
+	session, err := Store.New(c.Request, "connect.s.id")
 
-	session.Values["Authorised"] = true
+	session.Values["host"] =
 	session.Values["userId"] = userId
 
 	if err := Store.Save(c.Request, c.Writer, session); err != nil {

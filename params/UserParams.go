@@ -1,4 +1,4 @@
-package main
+package params
 
 /**
 Model binding types.
