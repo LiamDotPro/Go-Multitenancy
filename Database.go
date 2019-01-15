@@ -30,7 +30,6 @@ func startDatabaseServices() {
 	Connection = db
 
 	// Now Setup store - Tenant Store
-	// @todo Add Env Variable for password.
 	// Password is passed as byte key method
 	Store = gormstore.NewOptions(db, gormstore.Options{
 		TableName:       "sessions",

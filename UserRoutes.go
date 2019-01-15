@@ -15,18 +15,22 @@ func setupUsersRoutes(router *gin.Engine) {
 
 	users := router.Group("/api/users")
 
+	// Turn on the need for tenancy finding.
+	users.Use(middleware.FindTenancy(Connection))
+
 	// POST
-	users.POST("create", middleware.FindTenancy(Connection), HandleCreateUser)
+	users.POST("create", HandleCreateUser)
 	users.POST("login", HandleLogin)
-	users.POST("updateUserDetails", middleware.FindTenancy(Connection), HandleUpdateUserDetails)
+	users.POST("updateUserDetails", HandleUpdateUserDetails)
+	users.POST("testPoster", HandleTestPoster)
 
 	// GET
-	users.GET("getUserById", middleware.FindTenancy(Connection), HandleGetUserById)
-	users.GET("getCurrentUser", middleware.FindTenancy(Connection), HandleGetCurrentUser)
-	users.GET("testGetter", middleware.FindTenancy(Connection), HandleTestGetter)
+	users.GET("getUserById", HandleGetUserById)
+	users.GET("getCurrentUser", HandleGetCurrentUser)
+	users.GET("testGetter", HandleTestGetter)
 
 	// DELETE
-	users.DELETE("deleteUser", middleware.FindTenancy(Connection), HandleDeleteUser)
+	users.DELETE("deleteUser", HandleDeleteUser)
 }
 
 // @Summary Create a new user
