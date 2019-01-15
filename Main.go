@@ -22,7 +22,7 @@ func main() {
 	}
 
 	// Show Swagger pages
-	if os.Getenv("environment") == "development" {
+	if os.Getenv("environment") == "development" && os.Getenv("showSwag") == "true" {
 		if err := open("http://localhost:8000/swagger/index.html"); err != nil {
 			fmt.Println("Something has stopped swagger pages from being loaded into the browser..")
 		}

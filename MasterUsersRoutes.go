@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"github.com/gin-gonic/gin"
-	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
 )
@@ -17,6 +16,7 @@ func setupMasterUsersRoutes(router *gin.Engine) {
 	users.POST("create", HandleMasterCreateUser)
 	users.POST("login", HandleMasterLogin)
 	users.POST("updateUserDetails", HandleMasterUpdateUserDetails)
+	users.POST("createNewTenant", HandleCreateNewTenant)
 
 	// GET
 	users.GET("getUserById", HandleMasterGetUserById)
@@ -57,7 +57,7 @@ func HandleMasterCreateUser(c *gin.Context) {
 
 // @Summary Attempt to login using user details
 // @tags master/users
-// @Router /api/users/login [post]
+// @Router /master/api/users/login [post]
 func HandleMasterLogin(c *gin.Context) {
 
 	var json LoginParams
@@ -94,7 +94,7 @@ func HandleMasterLogin(c *gin.Context) {
 
 // @Summary Updates a users details
 // @tags master/users
-// @Router /api/users/updateUserDetails [post]
+// @Router /master/api/users/updateUserDetails [post]
 func HandleMasterUpdateUserDetails(c *gin.Context) {
 	var json UpdateUserParams
 
@@ -120,7 +120,7 @@ func HandleMasterUpdateUserDetails(c *gin.Context) {
 
 // @Summary Deletes a user using a user id
 // @tags master/users
-// @Router /api/users/deleteUser [delete]
+// @Router /master/api/users/deleteUser [delete]
 func HandleMasterDeleteUser(c *gin.Context) {
 	var json DeleteUserParams
 
@@ -145,7 +145,7 @@ func HandleMasterDeleteUser(c *gin.Context) {
 
 // @Summary Attempts to get a existing user by id
 // @tags master/users
-// @Router /api/users/getUserById [get]
+// @Router /master/api/users/getUserById [get]
 func HandleMasterGetUserById(c *gin.Context) {
 	// Were using delete params as it shares the same interface.
 	var json DeleteUserParams
@@ -172,16 +172,13 @@ func HandleMasterGetUserById(c *gin.Context) {
 
 // @Summary Attempts to get the currently logged in user using there session id.
 // @tags master/users
-// @Router /api/users/getCurrentUser [get]
+// @Router /master/api/users/getCurrentUser [get]
 func HandleMasterGetCurrentUser(c *gin.Context) {
 
 	// Get the currently logged int user id.
 	userId := c.MustGet("userId")
 
-	// Get the database object from the connection.
-	db, _ := c.Get("connection")
-
-	outcome, err := getUser(userId.(uint), db.(*gorm.DB))
+	outcome, err := getMasterUser(userId.(uint))
 
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
@@ -196,13 +193,28 @@ func HandleMasterGetCurrentUser(c *gin.Context) {
 
 }
 
-func HandleMasterTestGetter(c *gin.Context) {
+// @Summary Attempts to create a new tenant as a privileged user.
+// @tags master/users
+// @Router /master/api/users/createNewTenant [Post]
+func HandleCreateNewTenant(c *gin.Context) {
 
-	connection, _ := c.Get("connection")
+	var json CreateNewTenantParams
 
-	fmt.Printf("%v", connection.(*gorm.DB))
+	if err := c.Bind(&json); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "No subdomain identifier was found."})
+		return
+	}
+
+	outcome, err := createNewTenant(json.SubDomainIdentifier)
+
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
+		log.Println(err)
+		return
+	}
+
 	c.JSON(http.StatusOK, gin.H{
-		"message": "Test Ran successfully",
+		"message": outcome,
 	})
 
 }

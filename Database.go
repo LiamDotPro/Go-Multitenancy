@@ -6,7 +6,6 @@ import (
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/wader/gormstore"
 	"os"
-	"strings"
 	"time"
 )
 
@@ -51,35 +50,6 @@ func startDatabaseServices() {
 
 	// Every hour remove dead sessions.
 	go Store.PeriodicCleanup(1*time.Hour, quit)
-}
-
-// Create's a new database for use as a sub client.
-func createNewTenant(subDomainIdentifier string) (msg string, err error) {
-
-	// Create new database to hold client.
-	if err := Connection.Exec("CREATE DATABASE " + strings.ToLower(subDomainIdentifier) + " OWNER admin").Error; err != nil {
-		return "error making the database", err
-	}
-
-	var connectionInfo = TenantConnectionInformation{TenantSubDomainIdentifier: subDomainIdentifier, ConnectionString: "host=localhost port=5432 user=admin dbname=" + subDomainIdentifier + " password=1234 sslmode=disable"}
-
-	if err := Connection.Create(&connectionInfo).Error; err != nil {
-		return "error inserting the new database record", err
-	}
-
-	tenConn, tenConErr := connectionInfo.getConnection()
-
-	if tenConErr != nil {
-		return "error creating the connection using connection method", err
-	}
-
-	if migrateErr := migrateTenantTables(tenConn); migrateErr != nil {
-		return "error attempting to migrate the existing tables to new database", migrateErr
-	}
-
-	// Add the newly created tenant id back onto the tenant object
-
-	return "New Tenant has been successfully made", nil
 }
 
 // Simply migrates all of the tenant tables
