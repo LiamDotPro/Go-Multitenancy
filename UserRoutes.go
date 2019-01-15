@@ -2,6 +2,8 @@ package main
 
 import (
 	"fmt"
+	"github.com/LiamDotPro/Go-Multitenancy/middleware"
+	"github.com/LiamDotPro/Go-Multitenancy/params"
 	"github.com/gin-gonic/gin"
 	"github.com/jinzhu/gorm"
 	"log"
@@ -14,17 +16,17 @@ func setupUsersRoutes(router *gin.Engine) {
 	users := router.Group("/api/users")
 
 	// POST
-	users.POST("create", findTenancy(), HandleCreateUser)
+	users.POST("create", middleware.FindTenancy(Connection), HandleCreateUser)
 	users.POST("login", HandleLogin)
-	users.POST("updateUserDetails", findTenancy(), HandleUpdateUserDetails)
+	users.POST("updateUserDetails", middleware.FindTenancy(Connection), HandleUpdateUserDetails)
 
 	// GET
-	users.GET("getUserById", findTenancy(), HandleGetUserById)
-	users.GET("getCurrentUser", findTenancy(), HandleGetCurrentUser)
-	users.GET("testGetter", findTenancy(), HandleTestGetter)
+	users.GET("getUserById", middleware.FindTenancy(Connection), HandleGetUserById)
+	users.GET("getCurrentUser", middleware.FindTenancy(Connection), HandleGetCurrentUser)
+	users.GET("testGetter", middleware.FindTenancy(Connection), HandleTestGetter)
 
 	// DELETE
-	users.DELETE("deleteUser", findTenancy(), HandleDeleteUser)
+	users.DELETE("deleteUser", middleware.FindTenancy(Connection), HandleDeleteUser)
 }
 
 // @Summary Create a new user
@@ -33,7 +35,7 @@ func setupUsersRoutes(router *gin.Engine) {
 func HandleCreateUser(c *gin.Context) {
 
 	// Binds Model and handles validation.
-	var json CreateUserParams
+	var json params.CreateUserParams
 
 	if err := c.ShouldBindJSON(&json); err != nil {
 		// Handle errors
@@ -64,7 +66,7 @@ func HandleCreateUser(c *gin.Context) {
 // @Router /api/users/login [post]
 func HandleLogin(c *gin.Context) {
 
-	var json LoginParams
+	var json params.LoginParams
 
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Email or Password provided are incorrect, please try again."})
@@ -103,7 +105,7 @@ func HandleLogin(c *gin.Context) {
 // @tags users
 // @Router /api/users/updateUserDetails [post]
 func HandleUpdateUserDetails(c *gin.Context) {
-	var json UpdateUserParams
+	var json params.UpdateUserParams
 
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Missing required fields, please try again."})
@@ -132,7 +134,7 @@ func HandleUpdateUserDetails(c *gin.Context) {
 // @tags users
 // @Router /api/users/deleteUser [delete]
 func HandleDeleteUser(c *gin.Context) {
-	var json DeleteUserParams
+	var json params.DeleteUserParams
 
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Missing required fields, please try again."})
@@ -161,7 +163,7 @@ func HandleDeleteUser(c *gin.Context) {
 // @Router /api/users/getUserById [get]
 func HandleGetUserById(c *gin.Context) {
 	// Were using delete params as it shares the same interface.
-	var json DeleteUserParams
+	var json params.DeleteUserParams
 
 	if err := c.Bind(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "No user ID found, please try again."})
@@ -214,9 +216,14 @@ func HandleGetCurrentUser(c *gin.Context) {
 
 func HandleTestGetter(c *gin.Context) {
 
-	connection, _ := c.Get("connection")
+	c.JSON(http.StatusOK, gin.H{
+		"message": "Test Ran successfully",
+	})
 
-	fmt.Printf("%v", connection.(*gorm.DB))
+}
+
+func HandleTestPoster(c *gin.Context) {
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Test Ran successfully",
 	})

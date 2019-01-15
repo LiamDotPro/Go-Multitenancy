@@ -7,7 +7,6 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/swaggo/gin-swagger"
 	"github.com/swaggo/gin-swagger/swaggerFiles"
-	"io"
 	"log"
 	"os"
 	"os/exec"
@@ -37,13 +36,6 @@ func main() {
 
 	// Start database services and load master database.
 	startDatabaseServices()
-
-	// Logging to a file.
-	f, _ := os.Create("gin.log")
-	gin.DefaultWriter = io.MultiWriter(f)
-
-	// Use the following code if you need to write the logs to file and console at the same time.
-	gin.DefaultWriter = io.MultiWriter(f, os.Stdout)
 
 	// init router
 	router := gin.Default()
