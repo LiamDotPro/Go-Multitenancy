@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/LiamDotPro/Go-Multitenancy/params"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
@@ -32,7 +33,7 @@ func setupMasterUsersRoutes(router *gin.Engine) {
 func HandleMasterCreateUser(c *gin.Context) {
 
 	// Binds Model and handles validation.
-	var json CreateUserParams
+	var json params.CreateUserParams
 
 	if err := c.ShouldBindJSON(&json); err != nil {
 		// Handle errors
@@ -60,7 +61,7 @@ func HandleMasterCreateUser(c *gin.Context) {
 // @Router /master/api/users/login [post]
 func HandleMasterLogin(c *gin.Context) {
 
-	var json LoginParams
+	var json params.LoginParams
 
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Email or Password provided are incorrect, please try again."})
@@ -78,7 +79,7 @@ func HandleMasterLogin(c *gin.Context) {
 	// Setup new session only for host application.
 	session, err := Store.New(c.Request, "connect.s.id")
 
-	session.Values["host"] =
+	session.Values["host"] = true
 	session.Values["userId"] = userId
 
 	if err := Store.Save(c.Request, c.Writer, session); err != nil {
@@ -96,7 +97,7 @@ func HandleMasterLogin(c *gin.Context) {
 // @tags master/users
 // @Router /master/api/users/updateUserDetails [post]
 func HandleMasterUpdateUserDetails(c *gin.Context) {
-	var json UpdateUserParams
+	var json params.UpdateUserParams
 
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Missing required fields, please try again."})
@@ -122,7 +123,7 @@ func HandleMasterUpdateUserDetails(c *gin.Context) {
 // @tags master/users
 // @Router /master/api/users/deleteUser [delete]
 func HandleMasterDeleteUser(c *gin.Context) {
-	var json DeleteUserParams
+	var json params.DeleteUserParams
 
 	if err := c.ShouldBindJSON(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Missing required fields, please try again."})
@@ -148,7 +149,7 @@ func HandleMasterDeleteUser(c *gin.Context) {
 // @Router /master/api/users/getUserById [get]
 func HandleMasterGetUserById(c *gin.Context) {
 	// Were using delete params as it shares the same interface.
-	var json DeleteUserParams
+	var json params.DeleteUserParams
 
 	if err := c.Bind(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "No user ID found, please try again."})
@@ -198,7 +199,7 @@ func HandleMasterGetCurrentUser(c *gin.Context) {
 // @Router /master/api/users/createNewTenant [Post]
 func HandleCreateNewTenant(c *gin.Context) {
 
-	var json CreateNewTenantParams
+	var json params.CreateNewTenantParams
 
 	if err := c.Bind(&json); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"message": "No subdomain identifier was found."})

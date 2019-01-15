@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"github.com/LiamDotPro/Go-Multitenancy/tenants"
 	"github.com/jinzhu/gorm"
 	_ "github.com/jinzhu/gorm/dialects/postgres"
 	"github.com/wader/gormstore"
@@ -34,7 +35,7 @@ func startDatabaseServices() {
 	Store = gormstore.NewOptions(db, gormstore.Options{
 		TableName:       "sessions",
 		SkipCreateTable: false,
-	}, []byte("masterKeyPairValue"))
+	}, []byte(os.Getenv("sessionsPassword")))
 
 	// Always attempt to migrate changes to the master tenant schema
 	if err := migrateMasterTenantDatabase(); err != nil {
@@ -55,13 +56,13 @@ func startDatabaseServices() {
 // Simply migrates all of the tenant tables
 func AutoMigrateTenantTableChanges() {
 
-	var TenantInformation[] TenantConnectionInformation
+	var TenantInformation[] tenants.TenantConnectionInformation
 
-	Connection.Find(&TenantConnectionInformation{})
+	Connection.Find(&tenants.TenantConnectionInformation{})
 
 	for _, element := range TenantInformation {
 
-		conn, _ := element.getConnection()
+		conn, _ := element.GetConnection()
 
 		if err := migrateTenantTables(conn); err != nil {
 			fmt.Print("An error occurred while attempting to migrate tenant tables")

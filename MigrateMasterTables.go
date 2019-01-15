@@ -1,11 +1,13 @@
 package main
 
+import "github.com/LiamDotPro/Go-Multitenancy/tenants"
+
 /**
 This method uses the base tenant connection set out within init.
 */
 func migrateMasterTenantDatabase() error {
 
-	if err := Connection.AutoMigrate(&TenantConnectionInformation{}).Error; err != nil {
+	if err := Connection.AutoMigrate(&tenants.TenantConnectionInformation{}).Error; err != nil {
 		return err
 	}
 

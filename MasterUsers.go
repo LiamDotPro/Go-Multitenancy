@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"github.com/LiamDotPro/Go-Multitenancy/helpers"
+	"github.com/LiamDotPro/Go-Multitenancy/tenants"
 	"github.com/jinzhu/gorm"
 	"strings"
 )
@@ -116,13 +117,13 @@ func createNewTenant(subDomainIdentifier string) (msg string, err error) {
 		return "error making the database", err
 	}
 
-	var connectionInfo = TenantConnectionInformation{TenantSubDomainIdentifier: subDomainIdentifier, ConnectionString: "host=localhost port=5432 user=admin dbname=" + subDomainIdentifier + " password=1234 sslmode=disable"}
+	var connectionInfo = tenants.TenantConnectionInformation{TenantSubDomainIdentifier: subDomainIdentifier, ConnectionString: "host=localhost port=5432 user=admin dbname=" + subDomainIdentifier + " password=1234 sslmode=disable"}
 
 	if err := Connection.Create(&connectionInfo).Error; err != nil {
 		return "error inserting the new database record", err
 	}
 
-	tenConn, tenConErr := connectionInfo.getConnection()
+	tenConn, tenConErr := connectionInfo.GetConnection()
 
 	if tenConErr != nil {
 		return "error creating the connection using connection method", err
