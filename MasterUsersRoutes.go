@@ -2,10 +2,12 @@ package main
 
 import (
 	"fmt"
+	"github.com/LiamDotPro/Go-Multitenancy/helpers"
 	"github.com/LiamDotPro/Go-Multitenancy/params"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"time"
 )
 
 // Init
@@ -38,6 +40,24 @@ func HandleMasterCreateUser(c *gin.Context) {
 	if err := c.ShouldBindJSON(&json); err != nil {
 		// Handle errors
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Incorrect details supplied, please try again."})
+		return
+	}
+
+	// Validate the password being sent.
+	if len(json.Password) <= 7 {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "The specified password was to short, must be longer than 8 characters."})
+		return
+	}
+
+	// Validate the password contains at least one letter and capital
+	if !helpers.ContainsCapitalLetter(json.Password) {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "The specified password does not contain a capital letter."})
+		return
+	}
+
+	// Make sure the password contains at least one special character.
+	if !helpers.ContainsSpecialCharacter(json.Password) {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "The password must contain at least one special character."})
 		return
 	}
 
@@ -76,11 +96,17 @@ func HandleMasterLogin(c *gin.Context) {
 		return
 	}
 
-	// Setup new session only for host application.
-	session, err := Store.New(c.Request, "connect.s.id")
+	session, err := Store.Get(c.Request, "connect.s.id")
 
-	session.Values["host"] = true
-	session.Values["userId"] = userId
+	hostProfile := session.Values["host"].(HostProfile)
+
+	// Set session values to authorized
+	hostProfile.Authorized = true
+	hostProfile.AuthorizedTime = time.Now().UTC()
+	hostProfile.UserId = userId
+
+	// Reset login attempts once successfully logged in.
+	hostProfile.LoginAttempts[json.Email].LoginAttempts = 0
 
 	if err := Store.Save(c.Request, c.Writer, session); err != nil {
 		fmt.Print(err)

@@ -5,10 +5,11 @@ import (
 	"github.com/LiamDotPro/Go-Multitenancy/helpers"
 	"github.com/LiamDotPro/Go-Multitenancy/tenants"
 	"github.com/jinzhu/gorm"
+	"os"
 	"strings"
 )
 
-type MasterUsers struct {
+type MasterUser struct {
 	gorm.Model
 	Email         string
 	Password      string `json:",omitempty"`
@@ -24,7 +25,7 @@ type MasterUsers struct {
 func createMasterUser(email string, password string, accountType int) (uint, error) {
 
 	// Slice for found users.
-	var foundUsers []User
+	var foundUsers []MasterUser
 
 	if err := Connection.Select("email").Where("email = ?", email).Find(&foundUsers).Error; err != nil {
 		return 0, err
@@ -43,7 +44,7 @@ func createMasterUser(email string, password string, accountType int) (uint, err
 		return 0, hashErr
 	}
 
-	var user = User{Email: email, Password: hash, AccountType: accountType}
+	var user = MasterUser{Email: email, Password: hash, AccountType: accountType}
 
 	// Run create
 	if err := Connection.Create(&user).Error; err != nil {
@@ -59,7 +60,7 @@ func createMasterUser(email string, password string, accountType int) (uint, err
 func loginMasterUser(email string, password string) (uint, bool, error) {
 
 	// Create local state user
-	var user User
+	var user MasterUser
 
 	// Find the user by email, return error if input is malformed.
 	if err := Connection.First(&user, "email = ?", email).Error; err != nil {
@@ -80,10 +81,10 @@ func loginMasterUser(email string, password string) (uint, bool, error) {
 // A separate method is called when updating a company id
 func updateMasterUser(id uint, email string, accountType int, firstName string, lastName string, phoneNumber string, recoveryEmail string) (string, error) {
 
-	var user User
+	var user MasterUser
 
 	// Update the basic user information, anything that was set as nil will not be changed.
-	if err := Connection.Model(&user).Where("id = ?", id).Updates(User{
+	if err := Connection.Model(&user).Where("id = ?", id).Updates(MasterUser{
 		Email:         email,
 		AccountType:   accountType,
 		FirstName:     firstName,
@@ -100,7 +101,7 @@ func updateMasterUser(id uint, email string, accountType int, firstName string, 
 
 // Deletes a user in the database.
 func deleteMasterUser(id uint) (string, error) {
-	var user User
+	var user MasterUser
 
 	if err := Connection.Where("id = ?", id).Delete(&user).Error; err != nil {
 		return "An error occurred when trying to delete the user", err
@@ -117,7 +118,7 @@ func createNewTenant(subDomainIdentifier string) (msg string, err error) {
 		return "error making the database", err
 	}
 
-	var connectionInfo = tenants.TenantConnectionInformation{TenantSubDomainIdentifier: subDomainIdentifier, ConnectionString: "host=localhost port=5432 user=admin dbname=" + subDomainIdentifier + " password=1234 sslmode=disable"}
+	var connectionInfo = tenants.TenantConnectionInformation{TenantSubDomainIdentifier: subDomainIdentifier, ConnectionString: "host="+os.Getenv("dbHost") + " port=" + os.Getenv("dbPort") + " user=" + os.Getenv("dbUser") +" dbname=" + subDomainIdentifier + " password=" + os.Getenv("dbPassword") + " sslmode=disable"}
 
 	if err := Connection.Create(&connectionInfo).Error; err != nil {
 		return "error inserting the new database record", err
@@ -137,9 +138,9 @@ func createNewTenant(subDomainIdentifier string) (msg string, err error) {
 }
 
 // Get a specific user from the database.
-func getMasterUser(id uint) (*User, error) {
+func getMasterUser(id uint) (*MasterUser, error) {
 
-	var user User
+	var user MasterUser
 
 	if err := Connection.Select("id, created_at, updated_at, deleted_at, email, account_type, company_id, first_name, last_name").Where("id = ? ", id).First(&user).Error; err != nil {
 		return nil, err

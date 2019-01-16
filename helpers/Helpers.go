@@ -1,6 +1,8 @@
 package helpers
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"golang.org/x/crypto/bcrypt"
+)
 
 // Hashes a password
 // Running 4 rounds to comply with bcrypt recommendations for standard user.
@@ -20,4 +22,34 @@ func HashPasswordAdmin(password []byte) (string, error) {
 func CheckPasswordHash(password, hash string) bool {
 	err := bcrypt.CompareHashAndPassword([]byte(hash), []byte(password))
 	return err == nil
+}
+
+// Checks a string to see if it contains a special character
+func ContainsSpecialCharacter(s string) bool {
+	for i := 0; i < len(s); i++ {
+		switch b := s[i]; {
+		case b >= 'a' && b <= 'z':
+			continue
+		case b >= 'A' && b <= 'Z':
+			continue
+		case b >= '0' && b <= '9':
+			continue
+		default:
+			return true
+		}
+	}
+	return false
+}
+
+// Checks a string to make sure there is at least one capital letter
+// A side effect of this method is that one alphabet character must be present.
+func ContainsCapitalLetter(str string) bool {
+	for i := 0; i < len(str); i++ {
+		// Check character code to see if it's between character capitalization byte sequence
+		if str[i] >= 'A' && str[i] <= 'Z' {
+			return true
+		}
+	}
+	return false
+
 }

@@ -15,18 +15,22 @@ func setupUsersRoutes(router *gin.Engine) {
 
 	users := router.Group("/api/users")
 
+	// Turn on the need for tenancy finding.
+	users.Use(middleware.FindTenancy(Connection))
+
 	// POST
-	users.POST("create", middleware.FindTenancy(Connection), HandleCreateUser)
+	users.POST("create", HandleCreateUser)
 	users.POST("login", HandleLogin)
-	users.POST("updateUserDetails", middleware.FindTenancy(Connection), HandleUpdateUserDetails)
+	users.POST("updateUserDetails", HandleUpdateUserDetails)
+	users.POST("testPoster", HandleTestPoster)
 
 	// GET
-	users.GET("getUserById", middleware.FindTenancy(Connection), HandleGetUserById)
-	users.GET("getCurrentUser", middleware.FindTenancy(Connection), HandleGetCurrentUser)
-	users.GET("testGetter", middleware.FindTenancy(Connection), HandleTestGetter)
+	users.GET("getUserById", HandleGetUserById)
+	users.GET("getCurrentUser", HandleGetCurrentUser)
+	users.GET("testGetter", HandleMasterLoginAttempt(Store), HandleTestGetter)
 
 	// DELETE
-	users.DELETE("deleteUser", middleware.FindTenancy(Connection), HandleDeleteUser)
+	users.DELETE("deleteUser", HandleDeleteUser)
 }
 
 // @Summary Create a new user
@@ -216,6 +220,21 @@ func HandleGetCurrentUser(c *gin.Context) {
 
 func HandleTestGetter(c *gin.Context) {
 
+	sessionValues, err := Store.Get(c.Request, "connect.s.id")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	hostValues := sessionValues.Values["host"].(HostProfile)
+
+	fmt.Printf("%#v\n", hostValues)
+
+	loginAttemptValues := hostValues.LoginAttempts["liam@liams.pro"]
+
+	fmt.Printf("%#v\n", loginAttemptValues.LoginAttempts)
+	fmt.Println(loginAttemptValues.LoginAttempts)
+
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Test Ran successfully",
 	})
@@ -223,6 +242,14 @@ func HandleTestGetter(c *gin.Context) {
 }
 
 func HandleTestPoster(c *gin.Context) {
+
+	sessionValues, err := Store.Get(c.Request, "connect.s.id")
+
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	fmt.Printf("%#v\n", sessionValues)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Test Ran successfully",

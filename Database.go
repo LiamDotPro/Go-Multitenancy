@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"github.com/LiamDotPro/Go-Multitenancy/tenants"
 	"github.com/jinzhu/gorm"
@@ -30,12 +31,15 @@ func startDatabaseServices() {
 	Connection = db
 
 	// Now Setup store - Tenant Store
-	// @todo Add Env Variable for password.
 	// Password is passed as byte key method
 	Store = gormstore.NewOptions(db, gormstore.Options{
 		TableName:       "sessions",
 		SkipCreateTable: false,
 	}, []byte(os.Getenv("sessionsPassword")))
+
+	// Register session types for consuming in sessions
+	gob.Register(HostProfile{})
+	gob.Register(ClientProfile{})
 
 	// Always attempt to migrate changes to the master tenant schema
 	if err := migrateMasterTenantDatabase(); err != nil {
@@ -56,7 +60,7 @@ func startDatabaseServices() {
 // Simply migrates all of the tenant tables
 func AutoMigrateTenantTableChanges() {
 
-	var TenantInformation[] tenants.TenantConnectionInformation
+	var TenantInformation [] tenants.TenantConnectionInformation
 
 	Connection.Find(&tenants.TenantConnectionInformation{})
 
