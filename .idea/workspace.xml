@@ -2,13 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bbf6567c-36f8-4900-ae66-43ddd38f0abf" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LoginAttemptMiddleware.go" beforeDir="false" afterPath="$PROJECT_DIR$/LoginAttemptMiddleware.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Main.go" beforeDir="false" afterPath="$PROJECT_DIR$/Main.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MasterUsersRoutes.go" beforeDir="false" afterPath="$PROJECT_DIR$/MasterUsersRoutes.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SessionProfiles/ClientProfile.go" beforeDir="false" afterPath="$PROJECT_DIR$/sessionProfiles/ClientProfile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SessionProfiles/HostProfile.go" beforeDir="false" afterPath="$PROJECT_DIR$/sessionProfiles/HostProfile.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/helpers/Helpers.go" beforeDir="false" afterPath="$PROJECT_DIR$/helpers/Helpers.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -42,8 +36,8 @@
             <file pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/MasterUsersRoutes.go">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="703">
-                    <caret line="143" column="39" lean-forward="true" selection-start-line="143" selection-start-column="39" selection-end-line="143" selection-end-column="39" />
+                  <state relative-caret-position="747">
+                    <caret line="197" column="22" lean-forward="true" selection-start-line="197" selection-start-column="22" selection-end-line="197" selection-end-column="22" />
                   </state>
                 </provider>
               </entry>
@@ -64,7 +58,7 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/LoginAttemptMiddleware.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1969">
@@ -72,6 +66,24 @@
               <folding>
                 <element signature="e#14#157#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/params/MasterUserParams.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="75">
+              <caret line="5" selection-start-line="5" selection-end-line="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/params/UserParams.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="435">
+              <caret line="29" column="1" selection-start-line="29" selection-start-column="1" selection-end-line="29" selection-end-column="1" />
             </state>
           </provider>
         </entry>
@@ -111,7 +123,7 @@
         <entry file="file://$PROJECT_DIR$/MasterUsersRoutes.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="41">
-              <caret line="135" column="39" selection-start-line="135" selection-start-column="39" selection-end-line="135" selection-end-column="39" />
+              <caret line="141" column="39" selection-start-line="141" selection-start-column="39" selection-end-line="141" selection-end-column="39" />
             </state>
           </provider>
         </entry>
@@ -140,7 +152,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/api/TenantMiddleware.go" />
         <option value="$PROJECT_DIR$/api/TenantConnectionInformation.go" />
         <option value="$PROJECT_DIR$/api/Database.go" />
         <option value="$PROJECT_DIR$/MigrateTenantTables.go" />
@@ -189,8 +200,9 @@
         <option value="$USER_HOME$/go/src/github.com/LiamDotPro/Go-Multitenancy/helpers/Helpers.go" />
         <option value="$PROJECT_DIR$/Main.go" />
         <option value="$PROJECT_DIR$/UserRoutes.go" />
-        <option value="$PROJECT_DIR$/MasterUsersRoutes.go" />
         <option value="$PROJECT_DIR$/LoginAttemptMiddleware.go" />
+        <option value="$PROJECT_DIR$/params/UserParams.go" />
+        <option value="$PROJECT_DIR$/MasterUsersRoutes.go" />
       </list>
     </option>
   </component>
@@ -222,6 +234,11 @@
               <item name="Go-Multitenancy" type="b2602c69:ProjectViewProjectNode" />
               <item name="Go-Multitenancy" type="462c0819:PsiDirectoryNode" />
               <item name="middleware" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="Go-Multitenancy" type="b2602c69:ProjectViewProjectNode" />
+              <item name="Go-Multitenancy" type="462c0819:PsiDirectoryNode" />
+              <item name="params" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="Go-Multitenancy" type="b2602c69:ProjectViewProjectNode" />
@@ -310,7 +327,7 @@
     <frame x="1932" y="-9" width="941" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.2900336" />
+      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.2900336" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="0" show_stripe_button="false" />
@@ -322,7 +339,7 @@
       <window_info anchor="bottom" id="Debug" order="6" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="7" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="8" weight="0.4" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="9" sideWeight="0.49573106" visible="true" weight="0.32760474" />
+      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.49573106" visible="true" weight="0.32760474" />
       <window_info anchor="bottom" id="TODO" order="10" weight="0.32867885" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -373,20 +390,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="270">
           <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="18" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/params/UserParams.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="29" column="1" selection-start-line="29" selection-start-column="1" selection-end-line="29" selection-end-column="1" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/params/MasterUserParams.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="75">
-          <caret line="5" selection-start-line="5" selection-end-line="5" />
         </state>
       </provider>
     </entry>
@@ -595,10 +598,24 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/params/MasterUserParams.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="75">
+          <caret line="5" selection-start-line="5" selection-end-line="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/params/UserParams.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="435">
+          <caret line="29" column="1" selection-start-line="29" selection-start-column="1" selection-end-line="29" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/MasterUsersRoutes.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="703">
-          <caret line="143" column="39" lean-forward="true" selection-start-line="143" selection-start-column="39" selection-end-line="143" selection-end-column="39" />
+        <state relative-caret-position="747">
+          <caret line="197" column="22" lean-forward="true" selection-start-line="197" selection-start-column="22" selection-end-line="197" selection-end-column="22" />
         </state>
       </provider>
     </entry>

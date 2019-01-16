@@ -20,6 +20,7 @@ func setupMasterUsersRoutes(router *gin.Engine) {
 	users.POST("login", HandleMasterLoginAttempt(Store), HandleMasterLogin)
 	users.POST("updateUserDetails", HandleMasterUpdateUserDetails)
 	users.POST("createNewTenant", HandleCreateNewTenant)
+	users.POST("logout", HandleMasterLogout)
 
 	// GET
 	users.GET("getUserById", HandleMasterGetUserById)
@@ -130,6 +131,11 @@ func HandleMasterLogin(c *gin.Context) {
 	// Get our session from database.
 	session, err := Store.Get(c.Request, "connect.s.id")
 
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
+		return
+	}
+
 	// Create a copy of the host profile
 	hostProfile := session.Values["host"].(HostProfile)
 
@@ -152,6 +158,48 @@ func HandleMasterLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"attempt": outcome,
 		"message": "You have successfully logged into your account.",
+	})
+
+}
+
+// @Summary Logs a user out of the system
+// @tags master/users
+// @Router /master/api/users/logout [post]
+func HandleMasterLogout(c *gin.Context) {
+
+	// Binds Model and handles validation.
+	var json params.CreateUserParams
+
+	if err := c.ShouldBindJSON(&json); err != nil {
+		// Handle errors
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Incorrect details supplied, please try again."})
+		return
+	}
+
+	// Get our session from database.
+	session, err := Store.Get(c.Request, "connect.s.id")
+
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
+		return
+	}
+
+	// Create a copy of the host profile
+	hostProfile := session.Values["host"].(HostProfile)
+
+	// Set session values to unauthorized
+	hostProfile.Authorized = 0
+
+	// Set host profile back to values.
+	session.Values["host"] = hostProfile
+
+	// Save changes to our session.
+	if err := Store.Save(c.Request, c.Writer, session); err != nil {
+		fmt.Print(err)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "You have successfully logged out of your account.",
 	})
 
 }
