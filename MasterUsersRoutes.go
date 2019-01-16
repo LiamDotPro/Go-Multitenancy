@@ -17,9 +17,10 @@ func setupMasterUsersRoutes(router *gin.Engine) {
 
 	// POST
 	users.POST("create", HandleMasterCreateUser)
-	users.POST("login", HandleMasterLogin)
+	users.POST("login", HandleMasterLoginAttempt(Store), HandleMasterLogin)
 	users.POST("updateUserDetails", HandleMasterUpdateUserDetails)
 	users.POST("createNewTenant", HandleCreateNewTenant)
+	users.POST("logout", HandleMasterLogout)
 
 	// GET
 	users.GET("getUserById", HandleMasterGetUserById)
@@ -40,6 +41,12 @@ func HandleMasterCreateUser(c *gin.Context) {
 	if err := c.ShouldBindJSON(&json); err != nil {
 		// Handle errors
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Incorrect details supplied, please try again."})
+		return
+	}
+
+	if !helpers.ValidateEmail(json.Email) {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Email or Password provided are incorrect, please try again."})
+		c.Abort()
 		return
 	}
 
@@ -81,10 +88,35 @@ func HandleMasterCreateUser(c *gin.Context) {
 // @Router /master/api/users/login [post]
 func HandleMasterLogin(c *gin.Context) {
 
-	var json params.LoginParams
+	bindJson, _ := c.Get("bindedJson")
 
-	if err := c.ShouldBindJSON(&json); err != nil {
+	json := bindJson.(params.LoginParams)
+
+	if !helpers.ValidateEmail(json.Email) {
+		fmt.Println("A email address was not used to attempt login.")
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Email or Password provided are incorrect, please try again."})
+		c.Abort()
+		return
+	}
+
+	// Validate the password being sent.
+	if len(json.Password) <= 7 {
+		fmt.Println("Password is shorter then 8 characters")
+		c.JSON(http.StatusBadRequest, gin.H{"message": "The specified password was to short, must be longer than 8 characters."})
+		return
+	}
+
+	// Validate the password contains at least one letter and capital
+	if !helpers.ContainsCapitalLetter(json.Password) {
+		fmt.Println("No Capital letter used.")
+		c.JSON(http.StatusBadRequest, gin.H{"message": "The specified password does not contain a capital letter."})
+		return
+	}
+
+	// Make sure the password contains at least one special character.
+	if !helpers.ContainsSpecialCharacter(json.Password) {
+		fmt.Println("No special character found.")
+		c.JSON(http.StatusBadRequest, gin.H{"message": "The password must contain at least one special character."})
 		return
 	}
 
@@ -96,18 +128,29 @@ func HandleMasterLogin(c *gin.Context) {
 		return
 	}
 
+	// Get our session from database.
 	session, err := Store.Get(c.Request, "connect.s.id")
 
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
+		return
+	}
+
+	// Create a copy of the host profile
 	hostProfile := session.Values["host"].(HostProfile)
 
 	// Set session values to authorized
-	hostProfile.Authorized = true
+	hostProfile.Authorized = 1
 	hostProfile.AuthorizedTime = time.Now().UTC()
 	hostProfile.UserId = userId
 
 	// Reset login attempts once successfully logged in.
 	hostProfile.LoginAttempts[json.Email].LoginAttempts = 0
 
+	// Set host profile back to values.
+	session.Values["host"] = hostProfile
+
+	// Save changes to our session.
 	if err := Store.Save(c.Request, c.Writer, session); err != nil {
 		fmt.Print(err)
 	}
@@ -115,6 +158,48 @@ func HandleMasterLogin(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"attempt": outcome,
 		"message": "You have successfully logged into your account.",
+	})
+
+}
+
+// @Summary Logs a user out of the system
+// @tags master/users
+// @Router /master/api/users/logout [post]
+func HandleMasterLogout(c *gin.Context) {
+
+	// Binds Model and handles validation.
+	var json params.CreateUserParams
+
+	if err := c.ShouldBindJSON(&json); err != nil {
+		// Handle errors
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Incorrect details supplied, please try again."})
+		return
+	}
+
+	// Get our session from database.
+	session, err := Store.Get(c.Request, "connect.s.id")
+
+	if err != nil {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
+		return
+	}
+
+	// Create a copy of the host profile
+	hostProfile := session.Values["host"].(HostProfile)
+
+	// Set session values to unauthorized
+	hostProfile.Authorized = 0
+
+	// Set host profile back to values.
+	session.Values["host"] = hostProfile
+
+	// Save changes to our session.
+	if err := Store.Save(c.Request, c.Writer, session); err != nil {
+		fmt.Print(err)
+	}
+
+	c.JSON(http.StatusOK, gin.H{
+		"message": "You have successfully logged out of your account.",
 	})
 
 }

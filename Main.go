@@ -40,6 +40,8 @@ func main() {
 	// init router
 	router := gin.Default()
 
+	router.Use(CORSMiddleware())
+
 	// Setting up our routes on the router.
 
 	// Users
@@ -76,4 +78,16 @@ func open(url string) error {
 	}
 	args = append(args, url)
 	return exec.Command(cmd, args...).Start()
+}
+
+func CORSMiddleware() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Writer.Header().Set("Access-Control-Allow-Origin", "*")
+		c.Writer.Header().Set("Access-Control-Allow-Headers", "Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
+		if c.Request.Method == "OPTIONS" {
+			c.Abort()
+			return
+		}
+		c.Next()
+	}
 }
