@@ -1,4 +1,4 @@
-package SessionProfiles
+package sessionProfiles
 
 type ClientProfile struct {
 }
