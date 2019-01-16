@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"github.com/LiamDotPro/Go-Multitenancy/tenants"
 	"github.com/jinzhu/gorm"
@@ -36,6 +37,10 @@ func startDatabaseServices() {
 		SkipCreateTable: false,
 	}, []byte(os.Getenv("sessionsPassword")))
 
+	// Register session types for consuming in sessions
+	gob.Register(HostProfile{})
+	gob.Register(ClientProfile{})
+
 	// Always attempt to migrate changes to the master tenant schema
 	if err := migrateMasterTenantDatabase(); err != nil {
 		fmt.Print("There was an error while trying to migrate the tenant tables..")
@@ -55,7 +60,7 @@ func startDatabaseServices() {
 // Simply migrates all of the tenant tables
 func AutoMigrateTenantTableChanges() {
 
-	var TenantInformation[] tenants.TenantConnectionInformation
+	var TenantInformation [] tenants.TenantConnectionInformation
 
 	Connection.Find(&tenants.TenantConnectionInformation{})
 

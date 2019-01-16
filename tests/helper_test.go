@@ -43,3 +43,21 @@ func TestCompareHashToPassword(t *testing.T) {
 		t.Error("Incorrect password matched hash..")
 	}
 }
+
+// Tests to see if a special character is found
+func TestContainsSpecialCharacter(t *testing.T) {
+	result := helpers.ContainsSpecialCharacter("@./,*£")
+
+	if !result {
+		t.Fail()
+	}
+}
+
+//Test to see if a string contains a capital letter
+func TestContainsCapitalLetter(t *testing.T) {
+	result := helpers.ContainsCapitalLetter("a**Z")
+
+	if !result {
+		t.Fail()
+	}
+}

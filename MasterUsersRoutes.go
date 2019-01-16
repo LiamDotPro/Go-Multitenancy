@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"time"
 )
 
 // Init
@@ -95,11 +96,17 @@ func HandleMasterLogin(c *gin.Context) {
 		return
 	}
 
-	// Setup new session only for host application.
-	session, err := Store.New(c.Request, "connect.s.id")
+	session, err := Store.Get(c.Request, "connect.s.id")
 
-	session.Values["host"] = true
-	session.Values["userId"] = userId
+	hostProfile := session.Values["host"].(HostProfile)
+
+	// Set session values to authorized
+	hostProfile.Authorized = true
+	hostProfile.AuthorizedTime = time.Now().UTC()
+	hostProfile.UserId = userId
+
+	// Reset login attempts once successfully logged in.
+	hostProfile.LoginAttempts[json.Email].LoginAttempts = 0
 
 	if err := Store.Save(c.Request, c.Writer, session); err != nil {
 		fmt.Print(err)
