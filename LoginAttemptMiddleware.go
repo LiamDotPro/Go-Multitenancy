@@ -35,6 +35,13 @@ func newHostProfile() HostProfile {
 	return h
 }
 
+func newClientProfile() ClientProfile {
+	c := ClientProfile{}
+	c.LoginAttempts = make(map[string]map[string]*loginAttempt)
+	c.AuthorizationMap = make(map[string]uint)
+	return c
+}
+
 // Checks if a user is logged in with a session to the master dashboard
 func HandleMasterLoginAttempt(Store *gormstore.Store) gin.HandlerFunc {
 	return func(c *gin.Context) {
@@ -126,13 +133,14 @@ func HandleMasterLoginAttempt(Store *gormstore.Store) gin.HandlerFunc {
 			// Host profile requires little setup
 			session.Values["host"] = newHostProfile()
 
+			// Add the entry record to hostProfile
+			session.Values["host"].(HostProfile).LoginAttempts[json.Email] = &loginAttempt{LoginAttempts: 1, LastLoginAttemptTime: time.Now().UTC()}
+
 			// Client profile requires no setup
-			session.Values["client"] = ClientProfile{}
+			session.Values["client"] = newClientProfile()
 
-			if err := Store.Save(c.Request, c.Writer, session); err != nil {
-				fmt.Print(err)
-			}
-
+			// Set the session back to the handler for use.
+			c.Set("session", session)
 			return
 		} else {
 			// Profile was already found
@@ -145,9 +153,8 @@ func HandleMasterLoginAttempt(Store *gormstore.Store) gin.HandlerFunc {
 				// email has not been used to login add a new entry
 				h.LoginAttempts[json.Email] = &loginAttempt{LoginAttempts: 1, LastLoginAttemptTime: time.Now().UTC()}
 
-				if err := Store.Save(c.Request, c.Writer, sessionValues); err != nil {
-					fmt.Print(err)
-				}
+				// Set the session back to the handler for use.
+				c.Set("session", sessionValues)
 				return
 			}
 
@@ -158,6 +165,9 @@ func HandleMasterLoginAttempt(Store *gormstore.Store) gin.HandlerFunc {
 					// reset login attempts to have 2 more.
 					loginAttemptsFound.LoginAttempts = 1
 					loginAttemptsFound.LastLoginAttemptTime = time.Now().UTC()
+
+					// Set the session back to the handler for use.
+					c.Set("session", sessionValues)
 					return
 				} else {
 					c.JSON(http.StatusInternalServerError, gin.H{"message": "You have been locked out for too many attempts to login..", "status": "locked out", "timeLeft": 30 - time.Now().Sub(loginAttemptsFound.LastLoginAttemptTime).Minutes()})
@@ -171,6 +181,9 @@ func HandleMasterLoginAttempt(Store *gormstore.Store) gin.HandlerFunc {
 				loginAttemptsFound.LoginAttempts++
 				// replace last attempt date
 				loginAttemptsFound.LastLoginAttemptTime = time.Now().UTC()
+
+				// Set the session back to the handler for use.
+				c.Set("session", sessionValues)
 				return
 			}
 
@@ -283,12 +296,13 @@ func HandleLoginAttempt(Store *gormstore.Store) gin.HandlerFunc {
 			session.Values["host"] = newHostProfile()
 
 			// Client profile requires no setup
-			session.Values["client"] = ClientProfile{}
+			session.Values["client"] = newClientProfile()
 
-			if err := Store.Save(c.Request, c.Writer, session); err != nil {
-				fmt.Print(err)
-			}
+			session.Values["client"].(ClientProfile).LoginAttempts[tenantIdentifier.(string)] = make(map[string]*loginAttempt)
+			session.Values["client"].(ClientProfile).LoginAttempts[tenantIdentifier.(string)][json.Email] = &loginAttempt{LoginAttempts: 1, LastLoginAttemptTime: time.Now().UTC()}
 
+			// Set the session back to the handler for use.
+			c.Set("session", session)
 			return
 		} else {
 			// Profile was already found
@@ -299,8 +313,11 @@ func HandleLoginAttempt(Store *gormstore.Store) gin.HandlerFunc {
 
 			if !found {
 				// Create a new entry for the tenant entry in map, also create login attempt
-				tenantMap = map[string]*loginAttempt{}
+				tenantMap = make(map[string]*loginAttempt)
 				tenantMap[json.Email] = &loginAttempt{LoginAttempts: 1, LastLoginAttemptTime: time.Now().UTC()}
+
+				// Set the session back to the handler for use.
+				c.Set("session", sessionValues)
 				return
 			}
 
@@ -311,9 +328,8 @@ func HandleLoginAttempt(Store *gormstore.Store) gin.HandlerFunc {
 				// email has not been used to login add a new entry
 				loginAttemptsFound = &loginAttempt{LoginAttempts: 1, LastLoginAttemptTime: time.Now().UTC()}
 
-				if err := Store.Save(c.Request, c.Writer, sessionValues); err != nil {
-					fmt.Print(err)
-				}
+				// Set the session back to the handler for use.
+				c.Set("session", sessionValues)
 				return
 			}
 
@@ -324,6 +340,9 @@ func HandleLoginAttempt(Store *gormstore.Store) gin.HandlerFunc {
 					// reset login attempts to have 2 more.
 					loginAttemptsFound.LoginAttempts = 1
 					loginAttemptsFound.LastLoginAttemptTime = time.Now().UTC()
+
+					// Set the session back to the handler for use.
+					c.Set("session", sessionValues)
 					return
 				} else {
 					c.JSON(http.StatusInternalServerError, gin.H{"message": "You have been locked out for too many attempts to login..", "status": "locked out", "timeLeft": 30 - time.Now().Sub(loginAttemptsFound.LastLoginAttemptTime).Minutes()})
@@ -337,6 +356,9 @@ func HandleLoginAttempt(Store *gormstore.Store) gin.HandlerFunc {
 				loginAttemptsFound.LoginAttempts++
 				// replace last attempt date
 				loginAttemptsFound.LastLoginAttemptTime = time.Now().UTC()
+
+				// Set the session back to the handler for use.
+				c.Set("session", sessionValues)
 				return
 			}
 

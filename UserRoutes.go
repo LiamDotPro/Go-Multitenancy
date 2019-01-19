@@ -5,6 +5,7 @@ import (
 	"github.com/LiamDotPro/Go-Multitenancy/middleware"
 	"github.com/LiamDotPro/Go-Multitenancy/params"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/sessions"
 	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
@@ -220,13 +221,20 @@ func HandleGetCurrentUser(c *gin.Context) {
 
 func HandleTestGetter(c *gin.Context) {
 
-	sessionValues, err := Store.Get(c.Request, "connect.s.id")
+	session, err := c.Get("session")
 
-	if err != nil {
-		fmt.Println(err)
+	if !err {
+		fmt.Println("session not found")
 	}
 
-	fmt.Printf("%#v\n", sessionValues)
+	fmt.Printf("%#v\n", session.(*sessions.Session).Values["client"])
+
+	fmt.Printf("%#v\n", session.(*sessions.Session).Values["client"].(ClientProfile).LoginAttempts["test"]["test@liam.pro"])
+
+	// Save changes to our session.
+	if err := Store.Save(c.Request, c.Writer, session.(*sessions.Session)); err != nil {
+		fmt.Print(err)
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Test Ran successfully",
