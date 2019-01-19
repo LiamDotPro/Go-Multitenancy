@@ -27,7 +27,7 @@ func setupUsersRoutes(router *gin.Engine) {
 	// GET
 	users.GET("getUserById", HandleGetUserById)
 	users.GET("getCurrentUser", HandleGetCurrentUser)
-	users.GET("testGetter", HandleMasterLoginAttempt(Store), HandleTestGetter)
+	users.GET("testGetter", HandleLoginAttempt(Store), HandleTestGetter)
 
 	// DELETE
 	users.DELETE("deleteUser", HandleDeleteUser)
@@ -226,14 +226,7 @@ func HandleTestGetter(c *gin.Context) {
 		fmt.Println(err)
 	}
 
-	hostValues := sessionValues.Values["host"].(HostProfile)
-
-	fmt.Printf("%#v\n", hostValues)
-
-	loginAttemptValues := hostValues.LoginAttempts["liam@liams.pro"]
-
-	fmt.Printf("%#v\n", loginAttemptValues.LoginAttempts)
-	fmt.Println(loginAttemptValues.LoginAttempts)
+	fmt.Printf("%#v\n", sessionValues)
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Test Ran successfully",
