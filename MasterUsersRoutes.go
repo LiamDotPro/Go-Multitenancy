@@ -124,6 +124,11 @@ func HandleMasterLogin(c *gin.Context) {
 	// Get our session from database.
 	session, exists := c.Get("session")
 
+	if !exists {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
+		return
+	}
+
 	userId, outcome, err := loginMasterUser(json.Email, json.Password)
 
 	if err != nil {
@@ -134,11 +139,6 @@ func HandleMasterLogin(c *gin.Context) {
 		}
 
 		// Were sending 422 as there is a validation concern.
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
-		return
-	}
-
-	if !exists {
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
 		return
 	}

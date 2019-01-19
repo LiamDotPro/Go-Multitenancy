@@ -3,6 +3,9 @@
   <component name="ChangeListManager">
     <list default="true" id="bbf6567c-36f8-4900-ae66-43ddd38f0abf" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/MasterUsersRoutes.go" beforeDir="false" afterPath="$PROJECT_DIR$/MasterUsersRoutes.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/UserRoutes.go" beforeDir="false" afterPath="$PROJECT_DIR$/UserRoutes.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/MasterAuthorization.go" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/MasterAuthorization.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/middleware/TenantAuthorization.go" beforeDir="false" afterPath="$PROJECT_DIR$/middleware/TenantAuthorization.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -27,8 +30,8 @@
             <file pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/UserRoutes.go">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="540">
-                    <caret line="225" column="13" lean-forward="true" selection-start-line="225" selection-start-column="13" selection-end-line="225" selection-end-column="13" />
+                  <state relative-caret-position="480">
+                    <caret line="68" lean-forward="true" selection-start-line="68" selection-end-line="68" />
                   </state>
                 </provider>
               </entry>
@@ -61,8 +64,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/middleware/TenantAuthorization.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
-              <caret line="10" column="33" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
+            <state relative-caret-position="210">
+              <caret line="18" selection-start-line="18" selection-end-line="18" />
             </state>
           </provider>
         </entry>
@@ -70,8 +73,17 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/MasterUsersRoutes.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1770">
-              <caret line="130" column="84" selection-start-line="130" selection-start-column="84" selection-end-line="130" selection-end-column="84" />
+            <state relative-caret-position="270">
+              <caret line="69" column="5" lean-forward="true" selection-start-line="41" selection-start-column="4" selection-end-line="69" selection-end-column="5" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/middleware/MasterAuthorization.go">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="180">
+              <caret line="16" column="21" lean-forward="true" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
             </state>
           </provider>
         </entry>
@@ -128,8 +140,6 @@
         <option value="$PROJECT_DIR$/MasterUserParams.go" />
         <option value="$PROJECT_DIR$/params/MasterUserParams.go" />
         <option value="$PROJECT_DIR$/middleware/MasterMiddleware.go" />
-        <option value="$PROJECT_DIR$/middleware/MasterAuthorization.go" />
-        <option value="$PROJECT_DIR$/middleware/TenantAuthorization.go" />
         <option value="$PROJECT_DIR$/TenantMiddleware.go" />
         <option value="$PROJECT_DIR$/TenantConnectionInformation.go" />
         <option value="$PROJECT_DIR$/tenants/TenantConnectionInformation.go" />
@@ -148,9 +158,11 @@
         <option value="$USER_HOME$/go/src/github.com/LiamDotPro/Go-Multitenancy/helpers/Helpers.go" />
         <option value="$PROJECT_DIR$/Main.go" />
         <option value="$PROJECT_DIR$/params/UserParams.go" />
-        <option value="$PROJECT_DIR$/UserRoutes.go" />
         <option value="$PROJECT_DIR$/LoginAttemptMiddleware.go" />
         <option value="$PROJECT_DIR$/MasterUsersRoutes.go" />
+        <option value="$PROJECT_DIR$/middleware/TenantAuthorization.go" />
+        <option value="$PROJECT_DIR$/middleware/MasterAuthorization.go" />
+        <option value="$PROJECT_DIR$/UserRoutes.go" />
       </list>
     </option>
   </component>
@@ -287,8 +299,8 @@
       <window_info anchor="bottom" id="Debug" order="6" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="7" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="8" weight="0.4" />
-      <window_info active="true" anchor="bottom" id="Terminal" order="9" sideWeight="0.49573106" visible="true" weight="0.32760474" />
-      <window_info anchor="bottom" id="TODO" order="10" weight="0.32867885" />
+      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.49573106" weight="0.32760474" />
+      <window_info active="true" anchor="bottom" id="TODO" order="10" visible="true" weight="0.32867885" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -410,13 +422,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/middleware/MasterAuthorization.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="210">
-          <caret line="18" lean-forward="true" selection-start-line="18" selection-end-line="18" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/tests/helper_test.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="495">
@@ -505,13 +510,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/middleware/TenantAuthorization.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="10" column="33" selection-start-line="10" selection-start-column="33" selection-end-line="10" selection-end-column="33" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/MasterUsers.go">
       <provider selected="true" editor-type-id="text-editor">
         <state>
@@ -547,17 +545,31 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/middleware/TenantAuthorization.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="18" selection-start-line="18" selection-end-line="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/middleware/MasterAuthorization.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="16" column="21" lean-forward="true" selection-start-line="16" selection-start-column="21" selection-end-line="16" selection-end-column="21" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/MasterUsersRoutes.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1770">
-          <caret line="130" column="84" selection-start-line="130" selection-start-column="84" selection-end-line="130" selection-end-column="84" />
+        <state relative-caret-position="270">
+          <caret line="69" column="5" lean-forward="true" selection-start-line="41" selection-start-column="4" selection-end-line="69" selection-end-column="5" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/UserRoutes.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="540">
-          <caret line="225" column="13" lean-forward="true" selection-start-line="225" selection-start-column="13" selection-end-line="225" selection-end-column="13" />
+        <state relative-caret-position="480">
+          <caret line="68" lean-forward="true" selection-start-line="68" selection-end-line="68" />
         </state>
       </provider>
     </entry>
