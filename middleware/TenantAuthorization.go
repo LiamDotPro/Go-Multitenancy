@@ -17,8 +17,6 @@ func IfAuthorized(Store *gormstore.Store) gin.HandlerFunc {
 			c.Abort()
 		}
 
-		// Requires the user to be authorised.
-		// @todo make this check for tenancy id also.
 		if sessionValues.Values["Authorised"] != true {
 			c.JSON(http.StatusUnauthorized, gin.H{"message": "You are not authorized to view this."})
 			c.Abort()

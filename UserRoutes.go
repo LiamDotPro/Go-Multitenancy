@@ -2,9 +2,11 @@ package main
 
 import (
 	"fmt"
+	"github.com/LiamDotPro/Go-Multitenancy/helpers"
 	"github.com/LiamDotPro/Go-Multitenancy/middleware"
 	"github.com/LiamDotPro/Go-Multitenancy/params"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/sessions"
 	"github.com/jinzhu/gorm"
 	"log"
 	"net/http"
@@ -27,7 +29,7 @@ func setupUsersRoutes(router *gin.Engine) {
 	// GET
 	users.GET("getUserById", HandleGetUserById)
 	users.GET("getCurrentUser", HandleGetCurrentUser)
-	users.GET("testGetter", HandleMasterLoginAttempt(Store), HandleTestGetter)
+	users.GET("testGetter", HandleLoginAttempt(Store), HandleTestGetter)
 
 	// DELETE
 	users.DELETE("deleteUser", HandleDeleteUser)
@@ -44,6 +46,30 @@ func HandleCreateUser(c *gin.Context) {
 	if err := c.ShouldBindJSON(&json); err != nil {
 		// Handle errors
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Incorrect details supplied, please try again."})
+		return
+	}
+
+	if !helpers.ValidateEmail(json.Email) {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "Email or Password provided are incorrect, please try again."})
+		c.Abort()
+		return
+	}
+
+	// Validate the password being sent.
+	if len(json.Password) <= 7 {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "The specified password was to short, must be longer than 8 characters."})
+		return
+	}
+
+	// Validate the password contains at least one letter and capital
+	if !helpers.ContainsCapitalLetter(json.Password) {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "The specified password does not contain a capital letter."})
+		return
+	}
+
+	// Make sure the password contains at least one special character.
+	if !helpers.ContainsSpecialCharacter(json.Password) {
+		c.JSON(http.StatusBadRequest, gin.H{"message": "The password must contain at least one special character."})
 		return
 	}
 
@@ -70,31 +96,66 @@ func HandleCreateUser(c *gin.Context) {
 // @Router /api/users/login [post]
 func HandleLogin(c *gin.Context) {
 
-	var json params.LoginParams
+	bindJson, _ := c.Get("bindedJson")
 
-	if err := c.ShouldBindJSON(&json); err != nil {
+	json := bindJson.(params.LoginParams)
+
+	if !helpers.ValidateEmail(json.Email) {
+		fmt.Println("A email address was not used to attempt login.")
 		c.JSON(http.StatusBadRequest, gin.H{"message": "Email or Password provided are incorrect, please try again."})
+		c.Abort()
+		return
+	}
+
+	// Validate the password being sent.
+	if len(json.Password) <= 7 {
+		fmt.Println("Password is shorter then 8 characters")
+		c.JSON(http.StatusBadRequest, gin.H{"message": "The specified password was to short, must be longer than 8 characters."})
+		return
+	}
+
+	// Validate the password contains at least one letter and capital
+	if !helpers.ContainsCapitalLetter(json.Password) {
+		fmt.Println("No Capital letter used.")
+		c.JSON(http.StatusBadRequest, gin.H{"message": "The specified password does not contain a capital letter."})
+		return
+	}
+
+	// Make sure the password contains at least one special character.
+	if !helpers.ContainsSpecialCharacter(json.Password) {
+		fmt.Println("No special character found.")
+		c.JSON(http.StatusBadRequest, gin.H{"message": "The password must contain at least one special character."})
 		return
 	}
 
 	// Get the database object from the connection.
 	db, _ := c.Get("connection")
 
+	session, exists := c.Get("session")
+
+	if !exists {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
+		return
+	}
+
 	userId, outcome, err := loginUser(json.Email, json.Password, db.(*gorm.DB))
 
 	if err != nil {
+
+		// Save changes to our session if an error occurred and we need to abort early..
+		if err := Store.Save(c.Request, c.Writer, session.(*sessions.Session)); err != nil {
+			fmt.Print(err)
+		}
+
 		// Were sending 422 as there is a validation concern.
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
 		return
 	}
 
-	// Setup new session.
-	session, err := Store.New(c.Request, "connect.s.id")
+	// @todo make this into a map so userid's can be multiple.
+	session.(*sessions.Session).Values["userId"] = userId
 
-	session.Values["Authorised"] = true
-	session.Values["userId"] = userId
-
-	if err := Store.Save(c.Request, c.Writer, session); err != nil {
+	if err := Store.Save(c.Request, c.Writer, session.(*sessions.Session)); err != nil {
 		fmt.Print(err)
 	}
 
@@ -220,20 +281,20 @@ func HandleGetCurrentUser(c *gin.Context) {
 
 func HandleTestGetter(c *gin.Context) {
 
-	sessionValues, err := Store.Get(c.Request, "connect.s.id")
+	session, err := c.Get("session")
 
-	if err != nil {
-		fmt.Println(err)
+	if !err {
+		fmt.Println("session not found")
 	}
 
-	hostValues := sessionValues.Values["host"].(HostProfile)
+	fmt.Printf("%#v\n", session.(*sessions.Session).Values["client"])
 
-	fmt.Printf("%#v\n", hostValues)
+	fmt.Printf("%#v\n", session.(*sessions.Session).Values["client"].(ClientProfile).LoginAttempts["test"]["test@liam.pro"])
 
-	loginAttemptValues := hostValues.LoginAttempts["liam@liams.pro"]
-
-	fmt.Printf("%#v\n", loginAttemptValues.LoginAttempts)
-	fmt.Println(loginAttemptValues.LoginAttempts)
+	// Save changes to our session.
+	if err := Store.Save(c.Request, c.Writer, session.(*sessions.Session)); err != nil {
+		fmt.Print(err)
+	}
 
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Test Ran successfully",

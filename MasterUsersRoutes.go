@@ -5,6 +5,7 @@ import (
 	"github.com/LiamDotPro/Go-Multitenancy/helpers"
 	"github.com/LiamDotPro/Go-Multitenancy/params"
 	"github.com/gin-gonic/gin"
+	"github.com/gorilla/sessions"
 	"log"
 	"net/http"
 	"time"
@@ -120,24 +121,30 @@ func HandleMasterLogin(c *gin.Context) {
 		return
 	}
 
+	// Get our session from database.
+	session, exists := c.Get("session")
+
+	if !exists {
+		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
+		return
+	}
+
 	userId, outcome, err := loginMasterUser(json.Email, json.Password)
 
 	if err != nil {
+
+		// Save changes to our session if an error occurred and we need to abort early..
+		if err := Store.Save(c.Request, c.Writer, session.(*sessions.Session)); err != nil {
+			fmt.Print(err)
+		}
+
 		// Were sending 422 as there is a validation concern.
 		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
 		return
 	}
 
-	// Get our session from database.
-	session, err := Store.Get(c.Request, "connect.s.id")
-
-	if err != nil {
-		c.JSON(http.StatusUnprocessableEntity, gin.H{"message": "Something went wrong while trying to process that, please try again.", "error": err.Error()})
-		return
-	}
-
 	// Create a copy of the host profile
-	hostProfile := session.Values["host"].(HostProfile)
+	hostProfile := session.(*sessions.Session).Values["host"].(HostProfile)
 
 	// Set session values to authorized
 	hostProfile.Authorized = 1
@@ -148,10 +155,10 @@ func HandleMasterLogin(c *gin.Context) {
 	hostProfile.LoginAttempts[json.Email].LoginAttempts = 0
 
 	// Set host profile back to values.
-	session.Values["host"] = hostProfile
+	session.(*sessions.Session).Values["host"] = hostProfile
 
 	// Save changes to our session.
-	if err := Store.Save(c.Request, c.Writer, session); err != nil {
+	if err := Store.Save(c.Request, c.Writer, session.(*sessions.Session)); err != nil {
 		fmt.Print(err)
 	}
 
