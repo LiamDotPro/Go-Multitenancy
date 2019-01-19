@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="bbf6567c-36f8-4900-ae66-43ddd38f0abf" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/LoginAttemptMiddleware.go" beforeDir="false" afterPath="$PROJECT_DIR$/LoginAttemptMiddleware.go" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/MasterUsersRoutes.go" beforeDir="false" afterPath="$PROJECT_DIR$/MasterUsersRoutes.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/UserRoutes.go" beforeDir="false" afterPath="$PROJECT_DIR$/UserRoutes.go" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -30,8 +27,8 @@
             <file pinned="false" current-in-tab="true">
               <entry file="file://$PROJECT_DIR$/UserRoutes.go">
                 <provider selected="true" editor-type-id="text-editor">
-                  <state relative-caret-position="600">
-                    <caret line="229" column="33" selection-start-line="229" selection-start-column="33" selection-end-line="229" selection-end-column="50" />
+                  <state relative-caret-position="540">
+                    <caret line="225" column="13" lean-forward="true" selection-start-line="225" selection-start-column="13" selection-end-line="225" selection-end-column="13" />
                   </state>
                 </provider>
               </entry>
@@ -55,8 +52,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/LoginAttemptMiddleware.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="532">
-              <caret line="178" column="63" lean-forward="true" selection-start-line="178" selection-start-column="63" selection-end-line="178" selection-end-column="63" />
+            <state relative-caret-position="-1439">
+              <caret line="45" column="5" selection-start-line="45" selection-start-column="5" selection-end-line="45" selection-end-column="5" />
             </state>
           </provider>
         </entry>
@@ -73,8 +70,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/MasterUsersRoutes.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="139" column="40" lean-forward="true" selection-start-line="139" selection-start-column="40" selection-end-line="139" selection-end-column="40" />
+            <state relative-caret-position="1770">
+              <caret line="130" column="84" selection-start-line="130" selection-start-column="84" selection-end-line="130" selection-end-column="84" />
             </state>
           </provider>
         </entry>
@@ -278,7 +275,7 @@
     <frame x="1932" y="-9" width="1133" height="1053" extended-state="6" />
     <editor active="true" />
     <layout>
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.24147466" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.24147466" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Database Changes" order="0" show_stripe_button="false" />
@@ -290,7 +287,7 @@
       <window_info anchor="bottom" id="Debug" order="6" weight="0.4" />
       <window_info anchor="bottom" id="Cvs" order="7" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="8" weight="0.4" />
-      <window_info anchor="bottom" id="Terminal" order="9" sideWeight="0.49573106" visible="true" weight="0.32760474" />
+      <window_info active="true" anchor="bottom" id="Terminal" order="9" sideWeight="0.49573106" visible="true" weight="0.32760474" />
       <window_info anchor="bottom" id="TODO" order="10" weight="0.32867885" />
       <window_info anchor="bottom" id="Docker" order="11" show_stripe_button="false" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
@@ -545,22 +542,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/LoginAttemptMiddleware.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="532">
-          <caret line="178" column="63" lean-forward="true" selection-start-line="178" selection-start-column="63" selection-end-line="178" selection-end-column="63" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/UserRoutes.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="600">
-          <caret line="229" column="33" selection-start-line="229" selection-start-column="33" selection-end-line="229" selection-end-column="50" />
+        <state relative-caret-position="-1439">
+          <caret line="45" column="5" selection-start-line="45" selection-start-column="5" selection-end-line="45" selection-end-column="5" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/MasterUsersRoutes.go">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="139" column="40" lean-forward="true" selection-start-line="139" selection-start-column="40" selection-end-line="139" selection-end-column="40" />
+        <state relative-caret-position="1770">
+          <caret line="130" column="84" selection-start-line="130" selection-start-column="84" selection-end-line="130" selection-end-column="84" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/UserRoutes.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="540">
+          <caret line="225" column="13" lean-forward="true" selection-start-line="225" selection-start-column="13" selection-end-line="225" selection-end-column="13" />
         </state>
       </provider>
     </entry>
